@@ -4,9 +4,9 @@ use Config;
 use Module::Build;
 
 my %build_args = (
-  module_name => 'Alien::Base',
-  dist_name => 'Alien-Base',
-  dist_abstract => 'A base class for Alien:: modules',
+  module_name => 'Alien::Base::ModuleBuild',
+  dist_name => 'Alien-Base-ModuleBuild',
+  dist_abstract => 'A Module::Build subclass for building Alien:: modules and their libraries',
   dist_author => [
     'Graham Ollis <plicease@cpan.org>',
     'Joel A. Berger <joel.a.berger@gmail.com>',
@@ -23,7 +23,6 @@ my %build_args = (
     'File::chdir'      => 0.1005,
     'Sort::Versions'   => 0,
     'List::MoreUtils'  => 0,
-    'Perl::OSType'     => 0,
     'URI'              => 0,
     'File::ShareDir'   => 0,
     'Archive::Extract' => 0,
@@ -31,24 +30,18 @@ my %build_args = (
     'Text::ParseWords' => '3.26',
     'Shell::Guess'     => 0,
     'Shell::Config::Generate' => 0,
-    'FFI::CheckLib'    => 0.11,
-    'JSON::PP'          => 0,
+    'JSON::PP'         => 0,
   },
   test_requires => {
-    'Test2::Suite'     => '0.000060',
     'Test::More'       => 0.94,
-    'Cwd'              => 0,
-    'FindBin'          => 0,
-    'File::Spec'       => 0,
-    'File::Temp'       => 0,
   },
   recommends => {
     'HTML::LinkExtor' => 0,
   },
   meta_merge => {
     resources  => {
-      repository => "http://github.com/Perl5-Alien/Alien-Base",
-      bugtracker => "http://github.com/Perl5-Alien/Alien-Base/issues",
+      repository => "http://github.com/Perl5-Alien/Alien-Base-ModuleBuild",
+      bugtracker => "http://github.com/Perl5-Alien/Alien-Base-ModuleBuild/issues",
       x_MailingList => 'https://groups.google.com/forum/#!forum/perl5-alien',
       x_IRC => "irc://irc.perl.org/#native",
     },
@@ -73,5 +66,5 @@ if($^O eq 'solaris' && $Config{ptrsize} == 8) {
 }
 
 my $builder = Module::Build->new(%build_args);
-$builder->add_to_cleanup( '_Inline', 'Alien-Base-*' );
+$builder->add_to_cleanup( '_Inline', 'Alien-Base-ModuleBuild*' );
 $builder->create_build_script;

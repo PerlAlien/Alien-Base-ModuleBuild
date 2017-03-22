@@ -22,10 +22,6 @@ test_script:
   - perl Build.PL
   - Build
   - prove -bv t
-  - Build install
-  - cpanm -v --reinstall Acme::Alien::DontPanic
-  - cpanm -v --reinstall Acme::Ford::Prefect
-  - cpanm -v --reinstall Acme::Ford::Prefect::FFI
 
 cache:
   - C:\Perl5

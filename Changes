@@ -1,5 +1,7 @@
 Revision history for Perl module Alien::Base.
 
+  - Split Alien::Build::ModuleBuild from Alien::Build
+
 0.038 2017-03-06 00:16:18 -0500
   - Production release identical to 0.035_01 release
 
