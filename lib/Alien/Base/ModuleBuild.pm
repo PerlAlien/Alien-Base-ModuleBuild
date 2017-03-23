@@ -230,7 +230,7 @@ sub new {
   $self->config_data( 'finished_installing' => 0 );
 
   if(grep /(?<!\%)\%p/, map { ref($_) ? @{$_} : $_ } @{ $self->alien_build_commands }) {
-    carp "%p is deprecated, See https://metacpan.org/pod/distribution/Alien-Base/lib/Alien/Base/ModuleBuild/API.pod#p";
+    carp "%p is deprecated, See https://metacpan.org/pod/Alien::Base::ModuleBuild::API#p";
   }
 
   return $self;
@@ -614,7 +614,7 @@ sub alien_create_repositories {
   {
     print STDERR "If you are the author of this Alien dist, you need to provide at least\n";
     print STDERR "one repository in your Build.PL.  See:\n";
-    print STDERR "https://metacpan.org/pod/distribution/Alien-Base/lib/Alien/Base/ModuleBuild/API.pod#alien_repository\n";
+    print STDERR "https://metacpan.org/pod/Alien::Base::ModuleBuild::API#alien_repository\n";
     croak "No repositories specified.";
   }
 
@@ -1425,13 +1425,69 @@ L<Alien::Base>
 
 =head1 SOURCE REPOSITORY
 
-L<http://github.com/Perl5-Alien/Alien-Base>
+L<http://github.com/Perl5-Alien-ModuleBuild/Alien-Base>
 
 =head1 AUTHOR
 
 Original author: Joel Berger, E<lt>joel.a.berger@gmail.comE<gt>
 
 Current maintainer: Graham Ollis E<lt>plicease@cpan.orgE<gt> and the L<Alien::Base> team
+
+=head1 CONTRIBUTORS
+
+=over 
+
+=item David Mertens (run4flat)
+
+=item Mark Nunberg (mordy, mnunberg)
+
+=item Christian Walde (Mithaldu)
+
+=item Brian Wightman (MidLifeXis)
+
+=item Graham Ollis (plicease)
+
+=item Zaki Mughal (zmughal)
+
+=item mohawk2
+
+=item Vikas N Kumar (vikasnkumar)
+
+=item Flavio Poletti (polettix)
+
+=item Salvador Fandiño (salva)
+
+=item Gianni Ceccarelli (dakkar)
+
+=item Pavel Shaydo (zwon, trinitum)
+
+=item Kang-min Liu (劉康民, gugod)
+
+=item Nicholas Shipp (nshp)
+
+=back
+
+Thanks also to
+
+=over
+
+=item Christian Walde (Mithaldu)
+
+For productive conversations about component interoperablility.
+
+=item kmx
+
+For writing Alien::Tidyp from which I drew many of my initial ideas.
+
+=item David Mertens (run4flat)
+
+For productive conversations about implementation.
+
+=item Mark Nunberg (mordy, mnunberg)
+
+For graciously teaching me about rpath and dynamic loading,
+
+=back
 
 =head1 COPYRIGHT AND LICENSE
 

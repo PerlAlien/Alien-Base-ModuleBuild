@@ -72,7 +72,7 @@
 ^MANIFEST\.SKIP
 
 # Avoid archives of this distribution
-\bAlien-Base-[\d\.\_]+
+\bAlien-Base-ModuleBuild-[\d\.\_]+
 
 # Avoid the temporary directories created by Alien::Base
 ^\b_alien/

@@ -141,7 +141,7 @@ L<Alien::Base::FAQ>
 
 =head1 SOURCE REPOSITORY
 
-L<http://github.com/Perl5-Alien/Alien-Base>
+L<http://github.com/Perl5-Alien/Alien-Base-ModuleBuild>
 
 =head1 AUTHOR
 

@@ -513,7 +513,7 @@ L<https://groups.google.com/forum/#!forum/perl5-alien>
 If you have an issue with L<Alie::Base> itself, then please open a support ticket on the
 project's GitHub issue tracker.
 
-L<https://github.com/Perl5-Alien/Alien-Base/issues>
+L<https://github.com/Perl5-Alien/Alien-Base-ModuleBuild/issues>
 
 =back
  
