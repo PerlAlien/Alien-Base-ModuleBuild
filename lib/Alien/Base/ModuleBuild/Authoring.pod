@@ -1,6 +1,6 @@
 =head1 NAME
 
-Alien::Base::Authoring - Authoring an C<Alien::> module
+Alien::Base::ModuleBuild::Authoring - Authoring an C<Alien::> module using Alien::Base::ModuleBuild
 
 =head1 DESCRIPTION
 

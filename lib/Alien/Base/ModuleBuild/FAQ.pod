@@ -1,6 +1,6 @@
 =head1 NAME
 
-Alien::Base::FAQ - Frequently Asked Questions about Alien::Base
+Alien::Base::ModuleBuild::FAQ - Frequently Asked Questions about Alien::Base::ModuleBuild
 
 =head1 SYNOPSIS
 
