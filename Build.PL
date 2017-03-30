@@ -33,6 +33,7 @@ my %build_args = (
     'JSON::PP'         => 0,
   },
   test_requires => {
+    'Test2::Suite'     => '0.000060',
     'Test::More'       => 0.94,
   },
   recommends => {
