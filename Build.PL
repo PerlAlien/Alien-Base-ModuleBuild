@@ -35,7 +35,6 @@ my %build_args = (
   test_requires => {
     'Test2::V0'              => '0.000071',
     'Test2::Require::Module' => '0.000071',
-    'Test::More'             => '0.94',
   },
   recommends => {
     'HTML::LinkExtor' => 0,

@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+  - Migrate test suite over to Test2::V0
+  - Remove dependency on Test::More
+
 0.041_01 2017-07-25 20:10:58 -0400
   - Remove dependency on List::MoreUtils
 
