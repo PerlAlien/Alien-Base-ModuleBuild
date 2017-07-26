@@ -1,4 +1,7 @@
 Revision history for Perl module Alien::Base.
 
+0.041_01 2017-07-25 20:10:58 -0400
+  - Remove dependency on List::MoreUtils
+
 0.040 2017-03-29 01:26:09 -0400
   - Split Alien::Build::ModuleBuild from Alien::Build
