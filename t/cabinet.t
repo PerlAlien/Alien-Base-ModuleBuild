@@ -1,4 +1,4 @@
-use Test2::Bundle::Extended;
+use Test2::V0;
 use Alien::Base::ModuleBuild::File;
 use Alien::Base::ModuleBuild::Cabinet;
 
