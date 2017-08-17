@@ -3,6 +3,10 @@ use warnings;
 use Config;
 use Module::Build;
 
+# TODO: after October, require Alien::base 0.77 (at minimum)
+# and remove code in ABMB that pulls in File::ShareDir as it
+# is no longer needed.
+
 my %build_args = (
   module_name => 'Alien::Base::ModuleBuild',
   dist_name => 'Alien-Base-ModuleBuild',
