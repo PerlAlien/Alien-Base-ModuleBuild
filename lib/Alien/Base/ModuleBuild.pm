@@ -1276,7 +1276,7 @@ In your Build.PL:
 =head1 DESCRIPTION
 
 B<NOTE>: Please consider for new development of L<Alien>s that you use
-L<Alien::Build> and L<alienfile> instead.  Like this module they works
+L<Alien::Build> and L<alienfile> instead.  Like this module they work
 with L<Alien::Base>.  Unlike this module they are more easily customized
 and handle a number of corner cases better.  For a good place to start,
 please see L<Alien::Build::Manual::AlienAuthor>.  Although the 
