@@ -1,5 +1,8 @@
 Revision history for Perl module Alien::Base.
 
+  - Recommend Alien::Build instead
+  - Require Module::Build 0.4004 for test_requires support
+
 0.042 2017-07-26 11:35:49 -0400
   - Production release identical to 0.041_02
 
