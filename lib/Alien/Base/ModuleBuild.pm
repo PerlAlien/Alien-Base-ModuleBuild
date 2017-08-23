@@ -177,8 +177,16 @@ sub new {
   $self->alien_helper->{pkg_config} = 'Alien::Base::PkgConfig->pkg_config_command'
     unless defined $self->alien_helper->{pkg_config};
 
+  my $ab_version = eval {
+    require Alien::Base;
+    Alien::Base->VERSION;
+  };
+  $ab_version ||= 0;
+
   # setup additional temporary directories, and yes we have to add File::ShareDir manually
-  $self->_add_prereq( 'requires', 'File::ShareDir', '1.00' );
+  if($ab_version < 0.77) {
+    $self->_add_prereq( 'requires', 'File::ShareDir', '1.00' );
+  }
 
   # this just gets passed from the Build.PL to the config so that it can
   # be used by the auto_include method

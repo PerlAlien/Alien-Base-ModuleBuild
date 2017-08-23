@@ -9,7 +9,6 @@ my @mods = qw(
   Archive::Extract
   Capture::Tiny
   Cwd
-  File::ShareDir
   File::Spec
   File::Temp
   File::chdir

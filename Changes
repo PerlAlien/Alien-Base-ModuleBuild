@@ -1,5 +1,7 @@
 Revision history for Perl module Alien::Base.
 
+  - Remove unnecessary prereqs on newer versions of Alien::Base
+
 0.043 2017-08-17 03:48:08 -0400
   - Recommend Alien::Build instead
   - Require Module::Build 0.4004 for test_requires support
