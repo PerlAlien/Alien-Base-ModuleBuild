@@ -1,5 +1,4 @@
 use Test2::V0 -no_srand => 1;
-
 use Alien::Base::ModuleBuild::Utils qw(find_anchor_targets pattern_has_capture_groups );
 
 # replicated in http.t

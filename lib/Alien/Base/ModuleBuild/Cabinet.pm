@@ -5,7 +5,7 @@ use warnings;
 
 our $VERSION = '0.043';
 
-use Sort::Versions;
+use Sort::Versions qw( versioncmp );
 
 sub new {
   my $class = shift;

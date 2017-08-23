@@ -32,6 +32,7 @@ my %build_args = (
     'Shell::Guess'     => 0,
     'Shell::Config::Generate' => 0,
     'JSON::PP'         => 0,
+    'Path::Tiny'       => '0.077',
   },
   test_requires => {
     'Test2::V0'              => '0.000071',

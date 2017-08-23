@@ -1,9 +1,8 @@
 use Test2::V0 -no_srand => 1;
+use Alien::Base::ModuleBuild::Repository::Local;
 use File::Basename qw/fileparse/;
 use File::Temp;
 use File::chdir;
-
-use Alien::Base::ModuleBuild::Repository::Local;
 
 my $repo = Alien::Base::ModuleBuild::Repository::Local->new({ location => 't' });
 

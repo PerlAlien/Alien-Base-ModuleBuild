@@ -743,8 +743,11 @@ sub _alien_bin_require {
   
   my $version = $self->alien_bin_requires->{$mod};
 
-  eval qq{ use $mod $version () }; # should also work for version = 0
-  die $@ if $@;
+  unless(eval { $mod->can('new') })
+  {
+    eval '# line '. __LINE__ . ' "' . __FILE__ . qq{\n use $mod $version () }; # should also work for version = 0
+    die $@ if $@;
+  }
   
   if($mod->can('alien_helper')) {
     my $helpers = $mod->alien_helper;

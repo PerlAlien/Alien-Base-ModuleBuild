@@ -8,11 +8,9 @@ my @mods = qw(
   Alien::Build
   Archive::Extract
   Capture::Tiny
-  Cwd
   File::Spec
   File::Temp
   File::chdir
-  FindBin
   HTML::LinkExtor
   HTTP::Tiny
   Inline
@@ -20,11 +18,9 @@ my @mods = qw(
   Inline::CPP
   Module::Build
   Net::FTP
-  Perl::OSType
   Shell::Config::Generate
   Shell::Guess
   Sort::Versions
-  Test::Alien
   Test2::API
   Test2::V0
   Text::ParseWords

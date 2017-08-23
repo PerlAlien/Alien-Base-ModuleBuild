@@ -8,7 +8,7 @@ our $VERSION = '0.043';
 use Carp;
 use File::chdir;
 use File::Copy qw/copy/;
-use File::Spec;
+use Path::Tiny qw( path );
 
 use parent 'Alien::Base::ModuleBuild::Repository';
 
@@ -44,7 +44,7 @@ sub get_file  {
   my $full_file = do {
     local $CWD = $self->location;
     croak "Cannot find file: $file" unless -e $file;
-    File::Spec->rel2abs($file);
+    path($file)->absolute->stringify;
   };
 
   copy $full_file, $CWD;

@@ -1,38 +1,31 @@
 use Test2::V0 -no_srand => 1;
-use Cwd qw( abs_path );
+use Test2::Mock;
+use Alien::Base::ModuleBuild::Repository::HTTP;
+use Path::Tiny qw( path );
 use File::chdir;
-use FindBin;
-use File::Spec;
 use File::Temp;
 use URI::file;
 
-my $FILE_HOST = File::Spec->catdir( abs_path( $FindBin::Bin ), 'test_http' );
-my $INDEX_PATH = File::Spec->catfile( $FILE_HOST, 'index.html' );
-{
-  package Test::Alien::Base::HTTP;
+my $index_path = path('corpus/alien_base_modulebuild_repository_http/index.html')->absolute->stringify;
 
-  sub new {
-    return bless {}, __PACKAGE__;
-  }
-
-  sub get {
-    local $/ = undef;
-    open my $fh, '<', $INDEX_PATH or die "Could not open $INDEX_PATH: $!";
-    return {
-      success => 1,
-      content => <$fh>,
-    };
-  }
-
-  sub mirror {
-    return {
-      success => 1,
-    };
-  }
-}
-$INC{'Test/Alien/Base/HTTP.pm'} = __FILE__;
-
-require Alien::Base::ModuleBuild::Repository::HTTP;
+my $mock = Test2::Mock->new(
+  class    => 'HTTP::Tiny',
+  override => [
+    get => sub {
+      local $/ = undef;
+      open my $fh, '<', $index_path or die "Could not open $index_path: $!";
+      return {
+        success => 1,
+        content => <$fh>,
+      };
+    },
+    mirror => sub {
+      return {
+        success => 1,
+      };
+    },
+  ]
+);
 
 my $repo = Alien::Base::ModuleBuild::Repository::HTTP->new;
 
@@ -96,7 +89,6 @@ subtest 'connection() and protocol_class' => sub {
 subtest 'list_files()' => sub {
   subtest 'mock client' => sub {
     my $repo = Alien::Base::ModuleBuild::Repository::HTTP->new(
-      protocol_class => 'Test::Alien::Base::HTTP',
       host => 'http://example.com',
       location => '/index.html',
     );
@@ -106,7 +98,7 @@ subtest 'list_files()' => sub {
     skip_all 'No LWP::UserAgent' unless eval { require LWP::UserAgent; 1 };
     my $repo = Alien::Base::ModuleBuild::Repository::HTTP->new(
       protocol_class => 'LWP::UserAgent',
-      host => URI::file->new($INDEX_PATH)->as_string,
+      host => URI::file->new($index_path)->as_string,
       # location doesn't work for file:// URLs
     );
     is [ $repo->list_files ], [ 'relativepackage.txt' ];
@@ -115,9 +107,7 @@ subtest 'list_files()' => sub {
 
 subtest 'get_file()' => sub {
   subtest 'mock client' => sub {
-    my $repo = Alien::Base::ModuleBuild::Repository::HTTP->new(
-      protocol_class => 'Test::Alien::Base::HTTP',
-    );
+    my $repo = Alien::Base::ModuleBuild::Repository::HTTP->new;
     my $file = $repo->get_file( 'http://example.com/test.tar.gz' );
     is $file, 'test.tar.gz';
   };
@@ -130,16 +120,14 @@ subtest 'get_file()' => sub {
     my $tmp = File::Temp->newdir;
     local $CWD = $tmp->dirname;
 
-    my $file = $repo->get_file( URI::file->new($INDEX_PATH)->as_string );
+    my $file = $repo->get_file( URI::file->new($index_path)->as_string );
     is $file, 'index.html';
   };
 };
 
 subtest 'get()' => sub {
   subtest 'mock client' => sub {
-    my $repo = Alien::Base::ModuleBuild::Repository::HTTP->new(
-      protocol_class => 'Test::Alien::Base::HTTP',
-    );
+    my $repo = Alien::Base::ModuleBuild::Repository::HTTP->new;
     my $file = Alien::Base::ModuleBuild::File->new(
       repository => $repo,
       filename => 'http://example.com/test.tar.gz',
@@ -158,11 +146,93 @@ subtest 'get()' => sub {
 
     my $file = Alien::Base::ModuleBuild::File->new(
       repository => $repo,
-      filename => URI::file->new($INDEX_PATH)->as_string,
+      filename => URI::file->new($index_path)->as_string,
     );
     my $filename = $file->get();
     is $filename, 'index.html';
   };
+};
+
+subtest 'uri' => sub {
+
+  my $repo = Alien::Base::ModuleBuild::Repository::HTTP->new;
+
+  {
+    my $uri = $repo->build_uri('http','host.com', 'path');
+    is $uri, 'http://host.com/path', 'simplest case';
+  }
+
+  {
+    my $uri = $repo->build_uri('https','host.com', 'path');
+    is $uri, 'https://host.com/path', 'simplest case with the HTTPS protocol';
+  }
+
+  {
+    my $uri = $repo->build_uri('http','host.com', 'my path');
+    is $uri, 'http://host.com/my%20path', 'path with spaces';
+  }
+
+  {
+    my $uri = $repo->build_uri('http','host.com', 'deeper/', 'my path');
+    is $uri, 'http://host.com/deeper/my%20path', 'extended path with spaces';
+  }
+
+  {
+    my $uri = $repo->build_uri('http','host.com/', '/path');
+    is $uri, 'http://host.com/path', 'remove repeated /';
+  }
+
+  {
+    my $uri = $repo->build_uri('http','host.com/', '/path/', 'file.ext');
+    is $uri, 'http://host.com/path/file.ext', 'file with path';
+  }
+
+  {
+    my $uri = $repo->build_uri('http','host.com/', '/path/', 'http://host.com/other/file.ext');
+    is $uri, 'http://host.com/other/file.ext', 'absolute URI found in link';
+  }
+
+  {
+    my $uri = $repo->build_uri('http','host.com/', '/path/', 'http://example.org/other/file.ext');
+    is $uri, 'http://example.org/other/file.ext', 'absolute URI on different host';
+  }
+
+  {
+    my $uri = $repo->build_uri('https', 'github.com', '/libssh2/libssh2/releases/',
+                               '/libssh2/libssh2/releases/download/libssh2-1.6.0/libssh2-1.6.0.tar.gz');
+    is $uri, 'https://github.com/libssh2/libssh2/releases/download/libssh2-1.6.0/libssh2-1.6.0.tar.gz';
+  }
+};
+
+subtest 'content disposition' => sub {
+
+  my $content_disposition;
+
+  my $mock = Test2::Mock->new(
+    class => 'HTTP::Tiny',
+    override => [
+      mirror => sub {
+        my $response = { success => 1 };
+        $response->{headers}->{'content-disposition'} = $content_disposition
+          if defined $content_disposition;
+        $response;
+      },
+    ],
+  );
+
+  my $repo = Alien::Base::ModuleBuild::Repository::HTTP->new(
+    host => 'foo.bar.com',
+  );
+
+  is(Alien::Base::ModuleBuild::File->new( repository => $repo, filename => 'bogus' )->get, 'bogus', 'no content disposition');
+  $content_disposition = 'attachment; filename=foo.txt';
+  is(Alien::Base::ModuleBuild::File->new( repository => $repo, filename => 'bogus' )->get, 'foo.txt', 'filename = foo.txt (bare)');
+  $content_disposition = 'attachment; filename="foo.txt"';
+  is(Alien::Base::ModuleBuild::File->new( repository => $repo, filename => 'bogus' )->get, 'foo.txt', 'filename = foo.txt (double quotes)');
+  $content_disposition = 'attachment; filename="foo with space.txt" and some other stuff';
+  is(Alien::Base::ModuleBuild::File->new( repository => $repo, filename => 'bogus' )->get, 'foo with space.txt', 'filename = foo with space.txt (double quotes with space)');
+  $content_disposition = 'attachment; filename=foo.txt and some other stuff';
+  is(Alien::Base::ModuleBuild::File->new( repository => $repo, filename => 'bogus' )->get, 'foo.txt', 'filename = foo.txt (space terminated)');
 };
 
 done_testing;

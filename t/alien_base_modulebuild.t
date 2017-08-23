@@ -1,17 +1,13 @@
+use lib 't/lib';
 use Test2::V0 -no_srand => 1;
-
-BEGIN {
-  delete $ENV{ACTIVESTATE_PPM_BUILD};
-  delete $ENV{ALIEN_INSTALL_TYPE};
-  delete $ENV{ALIEN_FORCE};
-}
-
+use Test2::Plugin::AlienEnv;
 use Alien::Base::ModuleBuild;
 use File::chdir;
 use File::Temp ();
-use File::Path qw( rmtree mkpath );
 use Capture::Tiny qw( capture );
-use FindBin ();
+use Path::Tiny qw( path );
+
+my $abmb_root = path('.')->absolute;
 
 my $dir = File::Temp->newdir;
 local $CWD = "$dir";
@@ -78,7 +74,7 @@ subtest 'http + ssl + list ref' => sub {
 };
 
 subtest 'default temp and share' => sub {
-  rmtree [qw/_alien _share/], 0, 1;
+  local $CWD = _new_temp();
 
   my $builder = builder;
 
@@ -93,12 +89,10 @@ subtest 'default temp and share' => sub {
   output_to_note { $builder->depends_on('clean') };
   ok( ! -d '_alien', "Removes _alien dir");
   ok( ! -d '_share', "Removes _share dir");
-
-  rmtree [qw/_alien _share/], 0, 1;
 };
 
 subtest 'override temp and share' => sub {
-  rmtree [qw/_test_temp _test_share/], 0, 1;
+  local $CWD = _new_temp();
 
   my $builder = builder(
     alien_temp_dir => '_test_temp',
@@ -112,12 +106,12 @@ subtest 'override temp and share' => sub {
   output_to_note { $builder->depends_on('clean') };
   ok( ! -d '_test_temp', "Removes _test_temp dir");
   ok( ! -d '_test_share', "Removes _test_share dir");
-
-  rmtree [qw/_test_temp _test_share/], 0, 1;
 };
 
 subtest 'destdir' => sub {
   skip_all 'TODO on MSWin32' if $^O eq 'MSWin32';
+
+  local $CWD = _new_temp();
 
   open my $fh, '>', 'build.pl';
   print $fh <<'EOF';
@@ -173,16 +167,16 @@ EOF
   
   output_to_note { $builder->depends_on('install') };
 
-  my $foo_script = File::Spec->catfile($destdir, $share, 'bin', 'foo');
+  my $foo_script = "$destdir/$share/bin/foo";
   ok -e $foo_script, "script installed in destdir $foo_script";
-    
-  unlink 'build.pl';
-  rmtree [qw/ _alien  _share  blib  src /], 0, 0;
 };
 
 subtest 'alien_bin_requires' => sub {
 
-  my $bin = File::Spec->catdir($FindBin::Bin, 'builder', 'bin');
+  my $bin = $abmb_root->child('corpus/alien_base_modulebuild/bin')->stringify;
+  
+  local $CWD = _new_temp();
+  
   note "bin = $bin";
 
   eval q{
@@ -223,25 +217,25 @@ subtest 'alien_bin_requires' => sub {
   my %status;
   output_to_note { 
     local $CWD;
-    my $dir = File::Spec->catdir(qw( _alien buildroot ));
-    mkpath($dir, { verbose => 0 });
+    my $dir = "_alien/buildroot";
+    path($dir)->mkpath({verbose => 0});
     $CWD = $dir;
     %status = $builder->alien_do_system('privateapp');
   };
   ok $status{success}, 'found privateapp in path';
   if($^O eq 'MSWin32') {
-    ok -e File::Spec->catfile(qw( _alien env.cmd )), 'cmd shell helper';
-    ok -e File::Spec->catfile(qw( _alien env.bat )), 'bat shell helper';
-    ok -e File::Spec->catfile(qw( _alien env.ps1 )), 'power shell helper';
+    ok -e "_alien/env.cmd", 'cmd shell helper';
+    ok -e "_alien/env.bat", 'bat shell helper';
+    ok -e "_alien/env.ps1", 'power shell helper';
   } else {
-    ok -e File::Spec->catfile(qw( _alien env.sh )), 'bourne shell helper';
-    ok -e File::Spec->catfile(qw( _alien env.csh )), 'c shell helper';
+    ok -e "_alien/env.sh", 'bourne shell helper';
+    ok -e "_alien/env.csh", 'c shell helper';
   }
-
-  rmtree [qw/ _alien /], 0, 0;
 };
 
 subtest 'alien_check_built_version' => sub {
+
+  local $CWD = _new_temp();
 
   open my $fh, '>', 'build.pl';
   print $fh <<'EOF';
@@ -294,12 +288,11 @@ EOF
   output_to_note { $builder->depends_on('build') };
 
   is $builder->config_data( 'version' ), '2.3.4', 'version is set correctly';
-
-  unlink 'build.pl';
-  rmtree [qw/ _alien  _share  blib  src /], 0, 0;
 };
 
 subtest 'multi arg do_system' => sub {
+
+  local $CWD = _new_temp();
 
   open my $fh, '>', 'build.pl';
   print $fh <<'EOF';
@@ -352,12 +345,11 @@ EOF
   output_to_note { $builder->depends_on('build') };
 
   is $builder->config_data( 'version' ), '2.3.4', 'version is set correctly';
-
-  unlink 'build.pl';
-  rmtree [qw/ _alien  _share  blib  src /], 0, 0;
 };
 
 subtest 'source build requires' => sub {
+
+  local $CWD = _new_temp();
 
   local $mb_class = do {
     package My::MBBuildRequiresExample1;
@@ -408,11 +400,11 @@ subtest 'source build requires' => sub {
     my $builder = builder( alien_bin_requires => { 'Foo::Bar' => '1.1' } );
     is $builder->build_requires->{"Foo::Bar"}, '1.1', 'Foo::Bar = 1.1';
   };
-
-  rmtree [qw/ _alien  _share  blib  src /], 0, 0;
 };
 
 subtest 'system provides' => sub {
+
+  local $CWD = _new_temp();
 
   local $mb_class = do {
     package My::MBBuildSystemProvidesExample;
@@ -433,12 +425,11 @@ subtest 'system provides' => sub {
     is $builder->config_data('system_provides')->{Cflags}, '-DMY_CFLAGS',          'cflags';
     is $builder->config_data('system_provides')->{Libs},   '-L/my/libs -lmylib', 'libs';
   };
-
-  rmtree [qw/ _alien  _share  blib  src /], 0, 0;
 };
 
 subtest 'alien_env' => sub {
 
+  local $CWD = _new_temp();
   local $ENV{BAZ} = 'baz';
 
   my $builder = builder(
@@ -460,14 +451,13 @@ subtest 'alien_env' => sub {
   is $status{stdout}, 'my helper text', 'alien_env works with helpers';
   ($out, $err, %status) = capture { $builder->alien_do_system([$^X, -e => 'print $ENV{BAZ}||"undef"']) };
   is $status{stdout}, 'undef', 'alien_env works with helpers';
-  
-  
-  rmtree [qw/ _alien  _share  blib  src /], 0, 0;
 };
 
 subtest 'cmake' => sub {
 
   subtest 'default' => sub {
+
+    local $CWD = _new_temp();
 
     my $builder = builder(
       alien_bin_requires => { 'Alien::CMake' => 0 },
@@ -476,10 +466,11 @@ subtest 'cmake' => sub {
 
     isa_ok $builder, 'Alien::Base::ModuleBuild';
     is $builder->build_requires->{"Alien::CMake"}, '0.07', 'require at least 0.07';
-    rmtree [qw/ _alien  _share  blib  src /], 0, 0;  
   };
 
   subtest 'more recent' => sub {
+
+    local $CWD = _new_temp();
 
     my $builder = builder(
       alien_bin_requires => { 'Alien::CMake' => '0.10' },
@@ -488,9 +479,263 @@ subtest 'cmake' => sub {
 
     isa_ok $builder, 'Alien::Base::ModuleBuild';
     is $builder->build_requires->{"Alien::CMake"}, '0.10', 'keep 0.10';
-    rmtree [qw/ _alien  _share  blib  src /], 0, 0;  
   };
   
 };
+
+subtest 'install location' => sub {
+
+  local $CWD = _new_temp();
+
+  my $builder = builder();
+  my $path = $builder->alien_library_destination;
+
+  # this is not good enough, I really wish I could introspect File::ShareDir, then again, I wouldn't need this test!
+  my $path_to_share = "auto/share/dist/My-Test";
+  $path_to_share =~ s{\\}{/}g if $^O eq 'MSWin32';
+  like $path, qr/\Q$path_to_share\E/, 'path looks good';
+};
+
+subtest 'validation' => sub {
+
+  local $CWD = _new_temp();
+
+  my $builder = builder(
+    module_name  => 'My::Test::Module',
+    dist_version => '1.234.567',
+  );
+
+  ok( $builder->alien_validate_repo( {platform => undef} ), "undef validates to true");
+
+  subtest 'windows test' => sub {
+    skip_all "Windows test" unless $builder->is_windowsish();
+    ok( $builder->alien_validate_repo( {platform => 'Windows'} ), "platform Windows on Windows");
+    ok( ! $builder->alien_validate_repo( {platform => 'Unix'} ), "platform Unix on Windows is false");
+  };
+
+  subtest 'unix test' => sub {
+    skip_all "Unix test" unless $builder->is_unixish();
+    ok( $builder->alien_validate_repo( {platform => 'Unix'} ), "platform Unix on Unix");
+    ok( ! $builder->alien_validate_repo( {platform => 'Windows'} ), "platform Windows on Unix is false");
+  };
+
+  subtest 'need c compiler' => sub {
+    skip_all "Needs c compiler" unless $builder->have_c_compiler();
+    ok( $builder->alien_validate_repo( {platform => 'src'} ), "platform src");
+  };
+};
+
+subtest 'basic interpolation' => sub {
+
+  my $builder = builder();
+
+  is( $builder->alien_interpolate('%phello'), $builder->alien_exec_prefix . 'hello', 'prefix interpolation');
+  is( $builder->alien_interpolate('%%phello'), '%phello', 'no prefix interpolation with escape');
+
+  my $path = $builder->alien_library_destination;
+  is( $builder->alien_interpolate('thing other=%s'), "thing other=$path", 'share_dir interpolation');
+  is( $builder->alien_interpolate('thing other=%%s'), 'thing other=%s', 'no share_dir interpolation with escape');
+
+  my $perl = $builder->perl;
+  is( $builder->alien_interpolate('%x'), $perl, '%x is current interpreter' );
+  unlike( $builder->alien_interpolate('%X'), qr{\\}, 'no backslash in %X' );
+};
+
+subtest 'interpolation of version' => sub {
+
+  my $builder = builder();
+
+  subtest 'prior to loading version information' => sub {
+
+    my $warn_count = warns {
+      is  ( $builder->alien_interpolate('version=%v'), 'version=%v', 'version prior to setting it' );
+    };
+    is $warn_count, 1, 'version warning';
+  };
+  
+  subtest 'after loading the version information' => sub {
+
+    my $warn_count = warns {
+
+      my $current_version = $builder->config_data( 'alien_version' ) ;
+      my $test_version = time;
+      $builder->config_data( 'alien_version', $test_version );
+      is( $builder->alien_interpolate('version=%v'), "version=$test_version", 'version after setting it' );
+    };
+  
+    is $warn_count, 0, 'no warnings';
+
+  };
+
+};
+
+
+subtest 'interpolation of helpers' => sub {
+
+  my $mock = Test2::Mock->new(
+    class => 'Alien::foopatcher',
+    add => [
+      new          => sub { bless 'Alien::foopatcher', {} },
+      alien_helper => sub {
+        return {
+          patch1 => 'join " ", qw(patch1 --binary)',
+          patch2 => sub { 'patch2 --binary' },
+          double => sub { 2 },
+          argument_count2 => sub { scalar @_ },
+        },
+      }
+    ],
+  );
+
+  my $builder = builder(
+    alien_helper => {
+      foo => ' "bar" . "baz" ',
+      exception => ' die "abcd" ',
+      double => '"1";',
+      argument_count1 => 'scalar @_',
+    },
+    alien_bin_requires => {
+      'Alien::foopatcher' => 0,
+    },
+  ); 
+
+  is( $builder->alien_interpolate("|%{foo}|"), "|barbaz|", "helper" );
+  is( $builder->alien_interpolate("|%{foo}|%{foo}|"), "|barbaz|barbaz|", "helper x 2" );
+  eval { $builder->alien_interpolate("%{exception}") };
+  like $@, qr{abcd}, "exception gets thrown";
+
+  $builder->_alien_bin_require('Alien::foopatcher');
+  is( $builder->alien_interpolate("|%{patch1}|"), "|patch1 --binary|", "helper from independent Alien module");
+  is( $builder->alien_interpolate("|%{patch2}|"), "|patch2 --binary|", "helper from independent Alien module with code ref");
+
+  eval { $builder->alien_interpolate("%{bogus}") };
+  like $@, qr{no such helper: bogus}, "exception thrown with bogus helper";
+
+  is( $builder->alien_interpolate('%{double}'), "1", "MB helper overrides AB helper");
+
+  is( $builder->alien_interpolate('%{argument_count1}'), "0", "argument count is zero (string helper)");
+  is( $builder->alien_interpolate('%{argument_count2}'), "0", "argument count is zero (code helper)");
+
+  is( $builder->alien_interpolate('%{pkg_config}'), Alien::Base::PkgConfig->pkg_config_command, "support for %{pkg_config}");
+};
+
+subtest 'find lib' => sub {
+
+  my $expected = { 
+    lib       => [ 'lib' ], 
+    inc       => [ 'include' ],
+    lib_files => [ 'mylib' ],
+  };
+
+  my $builder = builder();
+
+  $builder->config( so => 'so' );
+  $builder->config( ext_lib => '.a' );
+
+  subtest 'dynamic' => sub {
+
+    my $dir = $abmb_root->child('corpus/alien_base_modulebuild__find_lib/dynamic')->stringify;
+
+    subtest 'Find from file structure' => sub {
+      local $expected->{lib_files} = [sort qw/mylib onlypostdot onlypredot otherlib prepostdot/];
+      my $paths = $builder->alien_find_lib_paths($dir);
+      is( $paths, $expected, "found paths from extensions only" ); 
+
+      my $pc = $builder->alien_generate_manual_pkgconfig($dir);
+      isa_ok($pc, 'Alien::Base::PkgConfig');
+
+      my $libs = $pc->keyword('Libs');
+      note "libs = $libs";
+
+      like( $libs, qr/-lmylib/, "->keyword('Libs') returns mylib" );
+
+      my ($L) = $libs =~ /-L(\S*)/g;
+      ok( -d $L,  "->keyword('Libs') finds mylib directory");
+      opendir(my $dh, $L);
+      my @files = grep { /mylib/ } readdir $dh;
+      ok( @files, "->keyword('Libs') finds mylib" );
+    };
+
+    subtest 'Find using alien_provides_libs' => sub {
+      $builder->alien_provides_libs('-lmylib');
+      my $paths = $builder->alien_find_lib_paths($dir);
+      is( $paths, $expected, "found paths from provides" ); 
+
+      my $pc = $builder->alien_generate_manual_pkgconfig($dir);
+      isa_ok($pc, 'Alien::Base::PkgConfig');
+
+      my $libs = $pc->keyword('Libs');
+      note "libs = $libs";
+
+      like( $libs, qr/-lmylib/, "->keyword('Libs') returns mylib" );
+
+      my ($L) = $libs =~ /-L(\S*)/g;
+      ok( -d $L,  "->keyword('Libs') finds mylib directory");
+      opendir(my $dh, $L);
+      my @files = grep { /mylib/ } readdir $dh;
+      ok( @files, "->keyword('Libs') finds mylib" );
+    };
+  };
+
+  subtest 'Find with static libs only' => sub {
+
+    my $dir = $abmb_root->child('corpus/alien_base_modulebuild__find_lib/static')->stringify;
+
+    $builder->alien_provides_libs(undef);
+    local $expected->{lib_files} = [sort qw/mylib otherlib/];
+
+    my $paths = $builder->alien_find_lib_paths($dir);
+    is( $paths, $expected, "found paths from extensions only" );
+
+    my $pc = $builder->alien_generate_manual_pkgconfig($dir);
+    isa_ok($pc, 'Alien::Base::PkgConfig');
+
+    my $libs = $pc->keyword('Libs');
+    note "libs = $libs";
+
+    like( $libs, qr/-lmylib/, "->keyword('Libs') returns mylib" );
+
+    my ($L) = $libs =~ /-L(\S*)/g;
+    ok( -d $L,  "->keyword('Libs') finds mylib directory");
+    opendir(my $dh, $L);
+    my @files = grep { /mylib/ } readdir $dh;
+    ok( @files, "->keyword('Libs') finds mylib" );
+  };
+
+  subtest 'Find with static libs and dynamic dir' => sub {
+
+    my $dir = $abmb_root->child('corpus/alien_base_modulebuild__find_lib/mixed')->stringify;
+
+    local $expected->{lib_files} = [sort qw/mylib otherlib/];
+
+    my $paths = $builder->alien_find_lib_paths($dir);
+    is( $paths, $expected, "found paths from extensions only" );
+  
+    my $pc = $builder->alien_generate_manual_pkgconfig($dir);
+    isa_ok($pc, 'Alien::Base::PkgConfig');
+
+    my $libs = $pc->keyword('Libs');
+    note "libs = $libs";
+
+    like( $libs, qr/-lmylib/, "->keyword('Libs') returns mylib" );
+
+    my ($L) = $libs =~ /-L(\S*)/g;
+    ok( -d $L,  "->keyword('Libs') finds mylib directory");
+    opendir(my $dh, $L);
+    my @files = grep { /mylib/ } readdir $dh;
+    ok( @files, "->keyword('Libs') finds mylib" );
+
+  };
+};
+
+$CWD = "$abmb_root";
+
+my $count = 1;
+sub _new_temp
+{
+  my $dir = "xx@{[ $count++ ]}";
+  mkdir $dir;
+  $dir;
+}
 
 done_testing;
