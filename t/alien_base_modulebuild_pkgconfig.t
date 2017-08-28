@@ -77,46 +77,48 @@ subtest 'version' => sub {
 
   skip_all $skip if $skip;
 
-  my @installed = map { /^(\S+)/ ? $1 : () } `$pkg_config --list-all`;
-  skip "pkg-config returned no packages", 2 unless @installed;
-  my $lib = $installed[0];
+  SKIP: {
+      my @installed = map { /^(\S+)/ ? $1 : () } `$pkg_config --list-all`;
+      skip "pkg-config returned no packages", 2 unless @installed;
+      my $lib = $installed[0];
 
-  my ($builder_ok, $builder_bad) = map { 
-    require Alien::Base::ModuleBuild;
-    my($out, $builder) = capture_merged {
-      Alien::Base::ModuleBuild->new( 
-        module_name => 'My::Test', 
-        dist_version => 0.01,
-        alien_name => $_,
-        share_dir => 't',
-      );
-    };
-    note $out if $out ne '';
-    $builder;
+      my ($builder_ok, $builder_bad) = map { 
+        require Alien::Base::ModuleBuild;
+        my($out, $builder) = capture_merged {
+          Alien::Base::ModuleBuild->new( 
+            module_name => 'My::Test', 
+            dist_version => 0.01,
+            alien_name => $_,
+            share_dir => 't',
+          );
+        };
+        note $out if $out ne '';
+        $builder;
+      }
+      ($lib, 'siughspidghsp');
+
+      subtest 'good' => sub {
+      
+        my($out, $value) = capture_merged {
+          $builder_ok->alien_check_installed_version,
+        };
+        note $out if $out ne '';
+        
+        is( $value, T(), 'found installed library' );
+        note "lib is $lib";
+      
+      };
+      
+      subtest 'bad' => sub {
+        my($out, $value) = capture_merged {
+          $builder_bad->alien_check_installed_version,
+        };
+        note $out if $out ne '';
+        
+        is( $value, F(), "returns false if not found");
+        
+      };
   }
-  ($lib, 'siughspidghsp');
-
-  subtest 'good' => sub {
-  
-    my($out, $value) = capture_merged {
-      $builder_ok->alien_check_installed_version,
-    };
-    note $out if $out ne '';
-    
-    is( $value, T(), 'found installed library' );
-    note "lib is $lib";
-  
-  };
-  
-  subtest 'bad' => sub {
-    my($out, $value) = capture_merged {
-      $builder_bad->alien_check_installed_version,
-    };
-    note $out if $out ne '';
-    
-    is( $value, F(), "returns false if not found");
-    
-  };
 };
 
 done_testing;
