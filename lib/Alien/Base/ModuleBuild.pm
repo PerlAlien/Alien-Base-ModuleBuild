@@ -1508,6 +1508,8 @@ Current maintainer: Graham Ollis E<lt>plicease@cpan.orgE<gt> and the L<Alien::Ba
 
 =item Nicholas Shipp (nshp)
 
+=item Petr Pisar (ppisar)
+
 =back
 
 Thanks also to
