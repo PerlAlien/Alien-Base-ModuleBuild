@@ -1,5 +1,7 @@
 Revision history for Perl module Alien::Base.
 
+  - Fix warning
+
 1.02 2018-03-11 14:33:44 -0400
   - Production release identical to 1.01_01
 
