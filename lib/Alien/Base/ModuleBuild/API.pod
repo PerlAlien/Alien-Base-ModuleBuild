@@ -1,3 +1,7 @@
+=pod
+
+=encoding UTF-8
+
 =head1 NAME
  
 Alien::Base::ModuleBuild::API - API Reference for Alien:: Authors

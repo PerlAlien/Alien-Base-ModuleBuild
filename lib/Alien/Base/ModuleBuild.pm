@@ -1267,6 +1267,10 @@ sub _catdir {
 __END__
 __POD__
 
+=pod
+
+=encoding UTF-8
+
 =head1 NAME
 
 Alien::Base::ModuleBuild - A Module::Build subclass for building Alien:: modules and their libraries
