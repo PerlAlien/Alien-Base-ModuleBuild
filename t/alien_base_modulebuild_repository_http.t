@@ -36,7 +36,7 @@ my $correct = [qw/link link2 link3 link4/];
 subtest 'find linsk with xtor' => sub {
   no warnings 'once';
   skip_all "HTML::LinkExtor not detected"
-    unless $Alien::Base::ModuleBuild::Repository::HTTP::Has_HTML_Parser; 
+    unless $Alien::Base::ModuleBuild::Repository::HTTP::Has_HTML_Parser;
 
   my @targets = $repo->find_links_preferred($html);
   is( \@targets, $correct, "parse HTML for anchor targets (HTML::LinkExtor)");
@@ -238,7 +238,7 @@ subtest 'content disposition' => sub {
 subtest 'check_http_response()' => sub {
 
   subtest '599 no SSL' => sub {
-  
+
     my $res = {
       'reason'  => 'Internal Exception',
       'url'     => 'https://mytest.test',
@@ -251,17 +251,39 @@ subtest 'check_http_response()' => sub {
       'content' => "IO::Socket::SSL 1.42 must be installed for https support\n" .
                    "Net::SSLeay 1.49 must be installed for https support\n",
     };
-    
+
     is(
       [Alien::Base::ModuleBuild::Repository::HTTP->check_http_response($res)],
       [1, "IO::Socket::SSL 1.42 must be installed for https support\n" .
-          "Net::SSLeay 1.49 must be installed for https support\n", 
+          "Net::SSLeay 1.49 must be installed for https support\n" .
+          "See https://github.com/Perl5-Alien/Alien-Base-ModuleBuild/issues/6#issuecomment-417097485",
           { 'content-type' => 'text/plain', 'content-length' => 110 }, "https://mytest.test" ]
     );
   };
-  
+
+  subtest '599 other' => sub {
+
+    my $res = {
+      'reason'  => 'Internal Exception',
+      'url'     => 'https://mytest.test',
+      'success' => '',
+      'status'  => 599,
+      'headers' => {
+        'content-type' => 'text/plain',
+        'content-length' => 13,
+      },
+      'content' => "Some Error!\n",
+    };
+
+    is(
+      [Alien::Base::ModuleBuild::Repository::HTTP->check_http_response($res)],
+      [1, "Some Error!\n",
+          { 'content-type' => 'text/plain', 'content-length' => 13 }, "https://mytest.test" ]
+    );
+  };
+
   subtest '404 bad url' => sub {
-  
+
     my $res = {
       'headers' => {
         'content-type' => 'text/plain',
@@ -274,13 +296,13 @@ subtest 'check_http_response()' => sub {
       'reason' => 'Not Found',
       'content' => "404 Not Found\n",
     };
-  
+
     is(
       [Alien::Base::ModuleBuild::Repository::HTTP->check_http_response($res)],
-      [1, "404 Not Found", 
+      [1, "404 Not Found",
           { 'content-type' => 'text/plain', 'content-length' => 14 }, "https://mytest.test/bogus" ],
     );
-  
+
   };
 };
 
