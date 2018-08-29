@@ -161,7 +161,8 @@ sub check_http_response {
   }
   else {
     if ( !$res->{success} ) {
-      return ( 1, $res->{reason}, $res->{headers}, $res->{url} );
+      my $reason = $res->{status} == 599 ? $res->{content} : "@{[ $res->{status} ]} @{[ $res->{reason} ]}";
+      return ( 1, $reason, $res->{headers}, $res->{url} );
     }
     return ( 0, $res->{content}, $res->{headers}, $res->{url} );
   }
