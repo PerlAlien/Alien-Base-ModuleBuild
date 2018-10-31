@@ -16,6 +16,7 @@ my @mods = qw(
   Inline
   Inline::C
   Inline::CPP
+  LWP::UserAgent
   Module::Build
   Net::FTP
   Shell::Config::Generate
