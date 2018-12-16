@@ -7,3 +7,5 @@ if perl -e 'exit ! ($] > 5.010)'; then
   cip exec cpanm -n Inline::C Inline::CPP
 
 fi
+
+cip exec cpanm -n Test2::Suite
