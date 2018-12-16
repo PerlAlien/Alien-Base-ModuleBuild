@@ -2,7 +2,7 @@
 
 set -ex
 
-if perl -e 'exit ! ($] > 5.010)'; then
+if cip exec perl -e 'exit ! ($] > 5.010)'; then
 
   cip exec cpanm -n Inline::C Inline::CPP
 
