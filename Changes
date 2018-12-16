@@ -1,5 +1,7 @@
 Revision history for Perl module Alien::Base.
 
+  - Require Archive::Tar 1.40 for pax_global_header fix
+
 1.05 2018-08-29 16:53:39 -0400
   - Documentation improvements
   - Improve diagnostics for HTTP connection failures (gh#6, gh#7)
