@@ -736,7 +736,7 @@ sub alien_detect_blib_scheme {
   (undef, my $dir, undef) = File::Spec->splitpath( __FILE__ );
   my @dirs = File::Spec->splitdir($dir);
 
-  shift @dirs while @dirs && $dirs[0];
+  shift @dirs while @dirs && $dirs[0] ne 'blib';
   return unless @dirs;
 
   if ( $dirs[1] && $dirs[1] eq 'lib' ) {
