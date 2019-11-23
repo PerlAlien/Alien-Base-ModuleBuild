@@ -95,6 +95,9 @@ __PACKAGE__->add_property('alien_ffi_name');
 # alien_temp_dir: folder name for download/build
 __PACKAGE__->add_property( alien_temp_dir => '_alien' );
 
+# alien_install_type: allow to override alien install type
+__PACKAGE__->add_property( alien_install_type => undef );
+
 # alien_share_dir: folder name for the "install" of the library
 # this is added (unshifted) to the @{share_dir->{dist}}  
 # N.B. is reset during constructor to be full folder name 
@@ -199,6 +202,15 @@ sub new {
     for keys %default_repository_class;
 
   my $self = $class->SUPER::new(%args);
+
+  ## Recheck Force System
+  if(!defined($ENV{ALIEN_INSTALL_TYPE}) && !defined($ENV{ALIEN_FORCE}) && defined($self->alien_install_type)) {
+    if   ($self->alien_install_type eq 'share' ) { $Force = 1; $ForceSystem = 0; }
+    elsif($self->alien_install_type eq 'system') { $Force = 0; $ForceSystem = 1; }
+  }
+
+  $self->config_data("Force" => $Force);
+  $self->config_data("ForceSystem" => $ForceSystem);
 
   $self->alien_helper->{pkg_config} = 'Alien::Base::PkgConfig->pkg_config_command'
     unless defined $self->alien_helper->{pkg_config};
@@ -404,7 +416,7 @@ sub ACTION_alien_code {
 
   my $version;
   $version = $self->alien_check_installed_version
-    unless $Force;
+    unless $self->config_data('Force');
 
   if ($version) {
     $self->config_data( install_type => 'system' );
@@ -418,7 +430,7 @@ sub ACTION_alien_code {
     return;
   }
   
-  if ($ForceSystem) {
+  if ($self->config_data('ForceSystem')) {
     die "Requested system install, but system package not detected."
   }
 
