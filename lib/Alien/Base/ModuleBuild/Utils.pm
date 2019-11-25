@@ -14,13 +14,13 @@ our @EXPORT_OK = qw/find_anchor_targets pattern_has_capture_groups/;
 sub find_anchor_targets {
   my $html = shift;
 
-  my @tags = extract_multiple( 
-    $html, 
+  my @tags = extract_multiple(
+    $html,
     [ sub { extract_bracketed($_[0], '<>') } ],
     undef, 1
   );
 
-  @tags = 
+  @tags =
     map { extract_href($_) }  # find related href=
     grep { /^<a/i }            # only anchor begin tags
     @tags;
