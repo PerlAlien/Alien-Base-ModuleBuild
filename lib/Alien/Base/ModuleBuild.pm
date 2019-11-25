@@ -1556,6 +1556,8 @@ Current maintainer: Graham Ollis E<lt>plicease@cpan.orgE<gt> and the L<Alien::Ba
 
 =item Petr Pisar (ppisar)
 
+=item Alberto Simões (ambs)
+
 =back
 
 Thanks also to
