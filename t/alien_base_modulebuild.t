@@ -730,18 +730,63 @@ subtest 'find lib' => sub {
 
 subtest 'ALIEN_FORCE and ALIEN_INSTALL_TYPE vars' => sub {
 
+  is
+    builder(),
+    object {
+      call [ config_data => 'Force' ] => F();
+      call [ config_data => 'ForceSystem' ] => F();
+    },
+  ;
+
+  is
+    builder( alien_install_type => 'share' ),
+    object {
+      call [ config_data => 'Force' ] => T();
+      call [ config_data => 'ForceSystem' ] => F();
+    },
+  ;
+
+  is
+    builder( alien_install_type => 'system' ),
+    object {
+      call [ config_data => 'Force' ] => F();
+      call [ config_data => 'ForceSystem' ] => T();
+    },
+  ;
+
   local $ENV{ALIEN_FORCE} = 1;
   
   Alien::Base::ModuleBuild::_compute_force();
   is $Alien::Base::ModuleBuild::Force, T();
   is $Alien::Base::ModuleBuild::ForceSystem, F();
-
+  is
+    builder(),
+    object {
+      call [ config_data => 'Force' ] => T();
+      call [ config_data => 'ForceSystem' ] => F();
+    },
+  ;
+  is
+    builder( alien_install_type => 'system' ),
+    object {
+      call [ config_data => 'Force' ] => T();
+      call [ config_data => 'ForceSystem' ] => F();
+    },
+  ;
   
   $ENV{ALIEN_FORCE} = 0;
 
   Alien::Base::ModuleBuild::_compute_force();
   is $Alien::Base::ModuleBuild::Force, F();
   is $Alien::Base::ModuleBuild::ForceSystem, F();
+  is
+    builder(),
+    object {
+      call [ config_data => 'Force' ] => F();
+      call [ config_data => 'ForceSystem' ] => F();
+    },
+  ;
+  
 
   delete $ENV{ALIEN_FORCE};
   local $ENV{ALIEN_INSTALL_TYPE} = 'share';
@@ -749,20 +794,46 @@ subtest 'ALIEN_FORCE and ALIEN_INSTALL_TYPE vars' => sub {
   Alien::Base::ModuleBuild::_compute_force();
   is $Alien::Base::ModuleBuild::Force, T();
   is $Alien::Base::ModuleBuild::ForceSystem, F();
-
-
+  is
+    builder(),
+    object {
+      call [ config_data => 'Force' ] => T();
+      call [ config_data => 'ForceSystem' ] => F();
+    },
+  ;
+  
   $ENV{ALIEN_INSTALL_TYPE} = 'system';
 
   Alien::Base::ModuleBuild::_compute_force();
   is $Alien::Base::ModuleBuild::Force, F();
   is $Alien::Base::ModuleBuild::ForceSystem, T();
-
+  is
+    builder(),
+    object {
+      call [ config_data => 'Force' ] => F();
+      call [ config_data => 'ForceSystem' ] => T();
+    },
+  ;
+  is
+    builder( alien_install_type => 'share' ),
+    object {
+      call [ config_data => 'Force' ] => F();
+      call [ config_data => 'ForceSystem' ] => T();
+    },
+  ;
 
   $ENV{ALIEN_INSTALL_TYPE} = 'default';
 
   Alien::Base::ModuleBuild::_compute_force();
   is $Alien::Base::ModuleBuild::Force, F();
   is $Alien::Base::ModuleBuild::ForceSystem, F();
+  is
+    builder(),
+    object {
+      call [ config_data => 'Force' ] => F();
+      call [ config_data => 'ForceSystem' ] => F();
+    },
+  ;
 
 
   $ENV{ALIEN_FORCE} = 0;
@@ -771,6 +842,13 @@ subtest 'ALIEN_FORCE and ALIEN_INSTALL_TYPE vars' => sub {
   Alien::Base::ModuleBuild::_compute_force();
   is $Alien::Base::ModuleBuild::Force, T();
   is $Alien::Base::ModuleBuild::ForceSystem, F();
+  is
+    builder(),
+    object {
+      call [ config_data => 'Force' ] => T();
+      call [ config_data => 'ForceSystem' ] => F();
+    },
+  ;
 
 
   $ENV{ALIEN_INSTALL_TYPE} = 'system';
@@ -778,6 +856,13 @@ subtest 'ALIEN_FORCE and ALIEN_INSTALL_TYPE vars' => sub {
   Alien::Base::ModuleBuild::_compute_force();
   is $Alien::Base::ModuleBuild::Force, F();
   is $Alien::Base::ModuleBuild::ForceSystem, T();
+  is
+    builder(),
+    object {
+      call [ config_data => 'Force' ] => F();
+      call [ config_data => 'ForceSystem' ] => T();
+    },
+  ;
 
 
   $ENV{ALIEN_INSTALL_TYPE} = 'default';
@@ -785,6 +870,13 @@ subtest 'ALIEN_FORCE and ALIEN_INSTALL_TYPE vars' => sub {
   Alien::Base::ModuleBuild::_compute_force();
   is $Alien::Base::ModuleBuild::Force, F();
   is $Alien::Base::ModuleBuild::ForceSystem, F();
+  is
+    builder(),
+    object {
+      call [ config_data => 'Force' ] => F();
+      call [ config_data => 'ForceSystem' ] => F();
+    },
+  ;
 
 
   $ENV{ALIEN_FORCE} = 1;
@@ -793,6 +885,13 @@ subtest 'ALIEN_FORCE and ALIEN_INSTALL_TYPE vars' => sub {
   Alien::Base::ModuleBuild::_compute_force();
   is $Alien::Base::ModuleBuild::Force, T();
   is $Alien::Base::ModuleBuild::ForceSystem, F();
+  is
+    builder(),
+    object {
+      call [ config_data => 'Force' ] => T();
+      call [ config_data => 'ForceSystem' ] => F();
+    },
+  ;
 
 
   $ENV{ALIEN_INSTALL_TYPE} = 'system';
@@ -800,6 +899,13 @@ subtest 'ALIEN_FORCE and ALIEN_INSTALL_TYPE vars' => sub {
   Alien::Base::ModuleBuild::_compute_force();
   is $Alien::Base::ModuleBuild::Force, F();
   is $Alien::Base::ModuleBuild::ForceSystem, T();
+  is
+    builder(),
+    object {
+      call [ config_data => 'Force' ] => F();
+      call [ config_data => 'ForceSystem' ] => T();
+    },
+  ;
 
 
   $ENV{ALIEN_INSTALL_TYPE} = 'default';
@@ -807,6 +913,14 @@ subtest 'ALIEN_FORCE and ALIEN_INSTALL_TYPE vars' => sub {
   Alien::Base::ModuleBuild::_compute_force();
   is $Alien::Base::ModuleBuild::Force, F();
   is $Alien::Base::ModuleBuild::ForceSystem, F();
+  is
+    builder(),
+    object {
+      call [ config_data => 'Force' ] => F();
+      call [ config_data => 'ForceSystem' ] => F();
+    },
+  ;
+
 };
 
 $CWD = "$abmb_root";
