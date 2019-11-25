@@ -216,8 +216,7 @@ Each command may be either a string or an array reference.  If the array referen
 
 [version 1.08]
 
-Allows the Build.PL script to set the ALIEN_INSTALL_TYPE variable. Note that if the variable is present,
-it will not be overriden by this value. Possible values are 'system' and 'share'.
+Set the install type.  Legal values are C<system> and C<share>.  The environment variable C<ALIEN_INSTALL_TYPE> and C<ALIEN_FORCE> will be used in preference over this property.
 
 =item alien_isolate_dynamic
 
