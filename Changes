@@ -1,6 +1,6 @@
 Revision history for Perl module Alien::Base.
 
-  - Added alien_install_type property
+  - Added alien_install_type property (gh#14)
 
 1.07 2019-11-22 16:01:56 -0700
   - Fix bug in blib detection (gh#13)
