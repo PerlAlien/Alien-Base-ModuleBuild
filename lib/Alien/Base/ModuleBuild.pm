@@ -489,7 +489,7 @@ sub ACTION_alien_code {
     $version = $self->alien_check_built_version
   }
 
-  if (! $version and ! $pc_version) {
+  if (! $version && ! $pc_version) {
     print STDERR "If you are the author of this Alien dist, you may need to provide a an\n";
     print STDERR "alien_check_built_version method for your Alien::Base::ModuleBuild\n";
     print STDERR "class.  See:\n";
