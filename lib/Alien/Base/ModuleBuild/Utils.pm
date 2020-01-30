@@ -1,14 +1,13 @@
 package Alien::Base::ModuleBuild::Utils;
-# some useful functions for A::B::MB code
 
 use strict;
 use warnings;
-
-our $VERSION = '1.08';
-
 use Text::Balanced qw/extract_bracketed extract_delimited extract_multiple/;
-
 use parent 'Exporter';
+
+# ABSTRACT: Private utilities
+# VERSION
+
 our @EXPORT_OK = qw/find_anchor_targets pattern_has_capture_groups/;
 
 sub find_anchor_targets {
