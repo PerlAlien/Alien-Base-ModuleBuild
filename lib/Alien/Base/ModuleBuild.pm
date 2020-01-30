@@ -1143,7 +1143,7 @@ sub alien_find_lib_paths {
 
   my $libs = $self->alien_provides_libs;
   my @libs;
-  @libs = grep { s/^-l// } split /\s+/, $libs if $libs;
+  @libs = map { my $f = $_; $f =~ s/^-l//; $f } grep { /^-l/ } split /\s+/, $libs if $libs;
 
   my (@lib_files, @lib_paths, @inc_paths);
 
@@ -1257,7 +1257,7 @@ sub _rscan_destdir {
   my $destdir = $self->destdir;
   $dir = _catdir($destdir, $dir) if defined $destdir;
   my $files = $self->rscan_dir($dir, $pattern);
-  $files = [ map { s/^$destdir//; $_ } @$files ] if defined $destdir;
+  $files = [ map { my $dir = $_; $dir =~ s/^$destdir//; $dir } @$files ] if defined $destdir;
   $files;
 }
 
