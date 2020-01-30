@@ -1,13 +1,6 @@
-/Build
-/Build.bat
-/MYMETA.*
-/META.*
-_build/
-/blib/
+/Alien-Base-ModuleBuild-*
+/.build/
 *.swp
 .DS_Store
-/MANIFEST.bak
-/MANIFEST
-/Alien-Base-ModuleBuild-*
 /_Inline
 *.bak

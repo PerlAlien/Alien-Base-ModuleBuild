@@ -2,11 +2,8 @@ package Alien::Base::ModuleBuild;
 
 use strict;
 use warnings;
-
-our $VERSION = '1.08';
-
+use 5.008001;
 use parent 'Module::Build';
-
 use Capture::Tiny 0.17 qw/capture tee/;
 use File::chdir;
 use File::Spec;
@@ -25,14 +22,15 @@ use Shell::Config::Generate;
 use File::Path qw/mkpath/;
 use Config;
 use Text::ParseWords qw( shellwords );
-
 use Alien::Base::PkgConfig;
 use Alien::Base::ModuleBuild::Cabinet;
 use Alien::Base::ModuleBuild::Repository;
-
 use Alien::Base::ModuleBuild::Repository::HTTP;
 use Alien::Base::ModuleBuild::Repository::FTP;
 use Alien::Base::ModuleBuild::Repository::Local;
+
+# ABSTRACT: A Module::Build subclass for building Alien:: modules and their libraries
+# VERSION
 
 # setup protocol specific classes
 # Alien:: author can override these defaults using alien_repository_class property
@@ -1279,14 +1277,6 @@ sub _catdir {
 __END__
 __POD__
 
-=pod
-
-=encoding UTF-8
-
-=head1 NAME
-
-Alien::Base::ModuleBuild - A Module::Build subclass for building Alien:: modules and their libraries
-
 =head1 SYNOPSIS
 
 In your Build.PL:
@@ -1512,53 +1502,7 @@ For example, C<ALIEN_OPENSSL_REPO_FTP_HOST=ftp.example.com>.
 
 =back
 
-=head1 SOURCE REPOSITORY
-
-L<http://github.com/Perl5-Alien/Alien-Base-ModuleBuild>
-
-=head1 AUTHOR
-
-Original author: Joel Berger, E<lt>joel.a.berger@gmail.comE<gt>
-
-Current maintainer: Graham Ollis E<lt>plicease@cpan.orgE<gt> and the L<Alien::Base> team
-
-=head1 CONTRIBUTORS
-
-=over
-
-=item David Mertens (run4flat)
-
-=item Mark Nunberg (mordy, mnunberg)
-
-=item Christian Walde (Mithaldu)
-
-=item Brian Wightman (MidLifeXis)
-
-=item Graham Ollis (plicease)
-
-=item Zaki Mughal (zmughal)
-
-=item mohawk2
-
-=item Vikas N Kumar (vikasnkumar)
-
-=item Flavio Poletti (polettix)
-
-=item Salvador Fandiño (salva)
-
-=item Gianni Ceccarelli (dakkar)
-
-=item Pavel Shaydo (zwon, trinitum)
-
-=item Kang-min Liu (劉康民, gugod)
-
-=item Nicholas Shipp (nshp)
-
-=item Petr Pisar (ppisar)
-
-=item Alberto Simões (ambs)
-
-=back
+=head1 THANKS
 
 Thanks also to
 
@@ -1566,7 +1510,7 @@ Thanks also to
 
 =item Christian Walde (Mithaldu)
 
-For productive conversations about component interoperablility.
+For productive conversations about component interoperability.
 
 =item kmx
 
@@ -1581,13 +1525,6 @@ For productive conversations about implementation.
 For graciously teaching me about rpath and dynamic loading,
 
 =back
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2012-2017 by Joel Berger
-
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.
 
 =cut
 

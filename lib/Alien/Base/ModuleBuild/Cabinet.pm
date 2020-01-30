@@ -2,10 +2,10 @@ package Alien::Base::ModuleBuild::Cabinet;
 
 use strict;
 use warnings;
-
-our $VERSION = '1.08';
-
 use Sort::Versions qw( versioncmp );
+
+# ABSTRACT: Private class
+# VERSION
 
 sub new {
   my $class = shift;

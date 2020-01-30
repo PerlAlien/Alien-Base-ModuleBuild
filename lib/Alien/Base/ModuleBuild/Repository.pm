@@ -2,13 +2,12 @@ package Alien::Base::ModuleBuild::Repository;
 
 use strict;
 use warnings;
-
-our $VERSION = '1.08';
-
 use Carp;
-
 use Alien::Base::ModuleBuild::File;
 use Alien::Base::ModuleBuild::Utils qw/pattern_has_capture_groups/;
+
+# ABSTRACT: Private class
+# VERSION
 
 sub new {
   my $class = shift;

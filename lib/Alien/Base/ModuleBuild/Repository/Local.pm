@@ -2,15 +2,14 @@ package Alien::Base::ModuleBuild::Repository::Local;
 
 use strict;
 use warnings;
-
-our $VERSION = '1.08';
-
 use Carp;
 use File::chdir;
 use File::Copy qw/copy/;
 use Path::Tiny qw( path );
-
 use parent 'Alien::Base::ModuleBuild::Repository';
+
+# ABSTRACT: Local file repository handler
+# VERSION
 
 sub new {
   my $class = shift;

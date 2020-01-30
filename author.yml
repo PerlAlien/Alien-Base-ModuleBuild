@@ -1,0 +1,71 @@
+---
+pod_spelling_system:
+  skip: 0
+  # list of words that are spelled correctly
+  # (regardless of what spell check thinks)
+  # or stuff that I like to spell incorrectly
+  # intentionally
+  stopwords:
+    - CMAKE
+    - rpath
+    - unsets
+    - validator
+    - xml
+    - zipballs
+    - AutoConf
+    - CFLAGS
+    - CMake
+    - Ceccarelli
+    - Fandi
+    - Flavio
+    - Gianni
+    - Kang
+    - Kumar
+    - Liu
+    - MidLifeXis
+    - Mughal
+    - Pavel
+    - Petr
+    - Pisar
+    - Poletti
+    - Shaydo
+    - Shipp
+    - Vikas
+    - Wightman
+    - Zaki
+    - ambs
+    - dakkar
+    - gugod
+    - mohawk
+    - nshp
+    - polettix
+    - ppisar
+    - salva
+    - trinitum
+    - vikasnkumar
+    - zmughal
+    - zwon
+    - Mertens
+    - Mithaldu
+    - Nunberg
+    - Walde
+    - mnunberg
+    - mordy
+    - autoconf
+    - bourne
+    - dists
+    - de
+    - facto
+    - kmx
+    - pkgconfig
+    - integrators
+
+pod_coverage:
+  skip: 0
+  # format is "Class#method" or "Class",regex allowed
+  # for either Class or method.
+  private:
+    - Alien::Base::ModuleBuild::Cabinet
+    - Alien::Base::ModuleBuild::File
+    - Alien::Base::ModuleBuild::Repository.*
+    - Alien::Base::ModuleBuild::Utils

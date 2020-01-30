@@ -2,18 +2,15 @@ package Alien::Base::ModuleBuild::Repository::HTTP;
 
 use strict;
 use warnings;
-
-our $VERSION = '1.08';
-
 use Carp;
-
 use HTTP::Tiny;
 use Scalar::Util qw( blessed );
 use URI;
-
 use Alien::Base::ModuleBuild::Utils;
-
 use parent 'Alien::Base::ModuleBuild::Repository';
+
+# ABSTRACT: HTTP repository handler
+# VERSION
 
 our $Has_HTML_Parser = eval { require HTML::LinkExtor; 1 };
 
