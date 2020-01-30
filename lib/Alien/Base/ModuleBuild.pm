@@ -1422,6 +1422,18 @@ INTERPOLATION>.
 Returns a set of key value pairs including C<stdout>, C<stderr>,
 C<success> and C<command>.
 
+=head2 alien_do_commands
+
+ $amb->alien_do_commands($phase);
+
+Executes the commands for the given phase.
+
+=head2 alien_interpolate
+
+ my $string = $amb->alien_interpolate($string);
+
+Takes the input string and interpolates the results.
+
 =head1 GUIDE TO DOCUMENTATION
 
 The documentation for C<Module::Build> is broken up into sections:
