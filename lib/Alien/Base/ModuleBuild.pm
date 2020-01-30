@@ -784,8 +784,10 @@ sub _alien_bin_require {
 
   unless(eval { $mod->can('new') })
   {
-    eval '# line '. __LINE__ . ' "' . __FILE__ . qq{\n use $mod $version () }; # should also work for version = 0
-    die $@ if $@;
+    my $pm = "$mod.pm";
+    $pm =~ s/::/\//g;
+    require $pm;
+    $mod->VERSION($version) if $version;
   }
 
   if($mod->can('alien_helper')) {
@@ -969,7 +971,7 @@ sub _alien_execute_helper {
   if(ref($code) ne 'CODE') {
     my $perl = $code;
     $code = sub {
-      my $value = eval $perl;
+      my $value = eval $perl; ## no critic (Policy::BuiltinFunctions::ProhibitStringyEval)
       die $@ if $@;
       $value;
     };
