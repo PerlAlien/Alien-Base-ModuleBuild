@@ -153,6 +153,22 @@ INTERPOLATION" in Alien::Base::ModuleBuild::API](https://metacpan.org/pod/Alien:
 Returns a set of key value pairs including `stdout`, `stderr`,
 `success` and `command`.
 
+## alien\_do\_commands
+
+```
+$amb->alien_do_commands($phase);
+```
+
+Executes the commands for the given phase.
+
+## alien\_interpolate
+
+```perl
+my $string = $amb->alien_interpolate($string);
+```
+
+Takes the input string and interpolates the results.
+
 # GUIDE TO DOCUMENTATION
 
 The documentation for `Module::Build` is broken up into sections:
