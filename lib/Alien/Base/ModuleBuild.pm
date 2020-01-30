@@ -13,7 +13,7 @@ no warnings;
 use Archive::Extract;
 use warnings;
 use Sort::Versions;
-use List::Util qw/uniq/;
+use List::Util qw( uniq any );
 use ExtUtils::Installed;
 use File::Copy qw/move/;
 use Env qw( @PATH );
@@ -229,7 +229,7 @@ sub new {
   $self->config_data( 'inline_auto_include' => $self->alien_inline_auto_include );
 
   if($Force || !$self->alien_check_installed_version) {
-    if (grep /(?<!\%)\%c/, map { ref($_) ? @{$_} : $_ } @{ $self->alien_build_commands }) {
+    if (any { /(?<!\%)\%c/ } map { ref($_) ? @{$_} : $_ } @{ $self->alien_build_commands }) {
       $self->config_data( 'autoconf' => 1 );
     }
 
@@ -273,7 +273,7 @@ sub new {
 
   $self->config_data( 'finished_installing' => 0 );
 
-  if(grep /(?<!\%)\%p/, map { ref($_) ? @{$_} : $_ } @{ $self->alien_build_commands }) {
+  if(any { /(?<!\%)\%p/ } map { ref($_) ? @{$_} : $_ } @{ $self->alien_build_commands }) {
     carp "%p is deprecated, See https://metacpan.org/pod/Alien::Base::ModuleBuild::API#p";
   }
 
@@ -1169,10 +1169,10 @@ sub alien_find_lib_paths {
       $file =~ s/^lib//;
 
       if (@libs) {
-        next unless grep { $file eq $_ } @libs;
+        next unless any { $file eq $_ } @libs;
       }
 
-      next if grep { $file eq $_ } @lib_files;
+      next if any { $file eq $_ } @lib_files;
 
       push @lib_files, $file;
       push @lib_paths, $path;
