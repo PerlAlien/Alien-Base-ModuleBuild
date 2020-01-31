@@ -1,6 +1,8 @@
 Revision history for Perl module {{$dist->name}}
 
 {{$NEXT}}
+  - Remove test dependency on Acme::Alien::DontPanic
+    (it should be optional) introduced in 1.10.
 
 1.10      2020-01-30 07:57:09 -0700
   - Production release identical to 1.09_01
