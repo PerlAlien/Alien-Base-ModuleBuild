@@ -2,13 +2,12 @@ package Alien::Base::ModuleBuild::Repository::FTP;
 
 use strict;
 use warnings;
-
-our $VERSION = '1.08';
-
 use parent 'Alien::Base::ModuleBuild::Repository';
-
 use Carp;
 use Net::FTP;
+
+# ABSTRACT: HTTP repository handler
+# VERSION
 
 sub connection {
   my $self = shift;
