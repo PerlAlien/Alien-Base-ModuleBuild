@@ -22,7 +22,6 @@ $modules{$_} = $_ for qw(
   Shell::Config::Generate
   Shell::Guess
   Sort::Versions
-  Test2::Mock
   Test2::Require::Module
   Test2::V0
   URI
