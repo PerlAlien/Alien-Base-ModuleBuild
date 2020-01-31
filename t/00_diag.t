@@ -10,19 +10,25 @@ my %modules;
 my $post_diag;
 
 $modules{$_} = $_ for qw(
+  Acme::Alien::DontPanic
   Alien::Base
   Alien::Base::PkgConfig
   Archive::Extract
   Archive::Tar
   Capture::Tiny
+  Digest::SHA
   File::chdir
+  HTML::LinkExtor
   HTTP::Tiny
+  Inline
+  Inline::C
+  Inline::CPP
+  LWP::UserAgent
   Module::Build
   Path::Tiny
   Shell::Config::Generate
   Shell::Guess
   Sort::Versions
-  Test2::Require::Module
   Test2::V0
   URI
   URI::file
