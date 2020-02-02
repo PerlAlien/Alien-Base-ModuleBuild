@@ -24,12 +24,14 @@ $modules{$_} = $_ for qw(
   Inline::C
   Inline::CPP
   LWP::UserAgent
+  List::Util
   Module::Build
   Path::Tiny
   Shell::Config::Generate
   Shell::Guess
   Sort::Versions
   Test2::V0
+  Text::ParseWords
   URI
   URI::file
   parent
