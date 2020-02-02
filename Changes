@@ -2,6 +2,11 @@ Revision history for Perl module {{$dist->name}}
 
 {{$NEXT}}
 
+1.12      2020-02-02 06:00:12 -0700
+  - Add List::Util and Text::ParseWords prereqs back.
+    They were accidentally removed from prereqs in 1.10.
+    (gh#16)
+
 1.11      2020-01-31 13:52:17 -0700
   - Remove test dependency on Acme::Alien::DontPanic
     (it should be optional) introduced in 1.10.
