@@ -46,10 +46,11 @@ jobs:
 
       - name: Install Static Dependencies
         run: |
-          set -ex
           cpanm -n Dist::Zilla
+          echo "missing authordeps"
           dzil authordeps --missing
           dzil authordeps --missing | cpanm -n
+          echo "missing listdeps"
           dzil listdeps --missing
           dzil listdeps --missing   | cpanm -n
       - name: Install Dynamic Dependencies
