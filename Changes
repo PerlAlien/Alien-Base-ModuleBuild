@@ -1,6 +1,8 @@
 Revision history for Perl module {{$dist->name}}
 
 {{$NEXT}}
+  - Add use strict and warnings to generated Install/Files.pm
+    modules (gh#17)
 
 1.12      2020-02-02 06:00:12 -0700
   - Add List::Util and Text::ParseWords prereqs back.

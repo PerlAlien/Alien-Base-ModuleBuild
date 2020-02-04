@@ -359,6 +359,8 @@ sub ACTION_code {
     open my $fh, '>', $file;
     print $fh <<EOF;
 package $module\::Install::Files;
+use strict;
+use warnings;
 require $module;
 sub Inline { shift; $module->Inline(\@_) }
 1;
