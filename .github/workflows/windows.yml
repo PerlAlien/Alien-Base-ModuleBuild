@@ -50,9 +50,9 @@ jobs:
           echo "missing authordeps"
           dzil authordeps --missing
           dzil authordeps --missing | cpanm -n
-          echo "missing listdeps"
-          dzil listdeps --missing
-          dzil listdeps --missing   | cpanm -n
+          #echo "missing listdeps"
+          #dzil listdeps --missing
+          #dzil listdeps --missing   | cpanm -n
       - name: Install Dynamic Dependencies
         run: |
           dzil run 'cpanm --installdeps .'
