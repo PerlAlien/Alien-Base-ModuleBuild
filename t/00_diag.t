@@ -11,6 +11,7 @@ my $post_diag;
 
 $modules{$_} = $_ for qw(
   Acme::Alien::DontPanic
+  Acme::Alien::DontPanic2
   Alien::Base
   Alien::Base::PkgConfig
   Archive::Extract
