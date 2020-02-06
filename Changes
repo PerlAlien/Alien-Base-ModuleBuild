@@ -1,6 +1,8 @@
 Revision history for Perl module {{$dist->name}}
 
 {{$NEXT}}
+
+1.14      2020-02-05 19:08:06 -0700
   - Add use strict and warnings to generated Install/Files.pm
     modules (gh#17)
 
