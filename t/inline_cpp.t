@@ -36,6 +36,10 @@ __CPP__
 
 #include <stdio.h>
 
+extern "C" {
+  int answer();
+}
+
 class Foo {
 public:
   char *string_answer()
@@ -45,5 +49,3 @@ public:
     return buffer;
   }
 };
-
-extern int answer();

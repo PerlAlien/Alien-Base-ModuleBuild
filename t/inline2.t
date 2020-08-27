@@ -33,11 +33,11 @@ __C__
 
 #include <stdio.h>
 
+extern int answer();
+
 char *string_answer()
 {
   static char buffer[1024];
   sprintf(buffer, "the answer to life the universe and everything is %d", answer());
   return buffer;
 }
-
-extern int answer();
