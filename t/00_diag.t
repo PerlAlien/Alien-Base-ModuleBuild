@@ -21,9 +21,6 @@ $modules{$_} = $_ for qw(
   File::chdir
   HTML::LinkExtor
   HTTP::Tiny
-  Inline
-  Inline::C
-  Inline::CPP
   LWP::UserAgent
   List::Util
   Module::Build
