@@ -1,4 +1,4 @@
-# Alien::Base::ModuleBuild [![Build Status](https://travis-ci.org/PerlAlien/Alien-Base-ModuleBuild.svg)](http://travis-ci.org/PerlAlien/Alien-Base-ModuleBuild) ![windows](https://github.com/PerlAlien/Alien-Base-ModuleBuild/workflows/windows/badge.svg) ![macos](https://github.com/PerlAlien/Alien-Base-ModuleBuild/workflows/macos/badge.svg)
+# Alien::Base::ModuleBuild ![linux](https://github.com/PerlAlien/Alien-Base-ModuleBuild/workflows/linux/badge.svg) ![windows](https://github.com/PerlAlien/Alien-Base-ModuleBuild/workflows/windows/badge.svg) ![macos](https://github.com/PerlAlien/Alien-Base-ModuleBuild/workflows/macos/badge.svg)
 
 A Module::Build subclass for building Alien:: modules and their libraries
 
