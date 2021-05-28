@@ -962,7 +962,7 @@ sub do_system {
   # restore wd
   $CWD = $initial_cwd;
 
-  return wantarray ? %return : $return{success};  ## no critic (Policy::Freenode::Wantarray)
+  return wantarray ? %return : $return{success};  ## no critic (Policy::Community::Wantarray)
 }
 
 sub _alien_execute_helper {
