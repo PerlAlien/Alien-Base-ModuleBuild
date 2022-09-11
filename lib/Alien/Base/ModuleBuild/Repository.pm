@@ -39,8 +39,19 @@ sub location {
   return $self->{location};
 }
 
+sub is_network_fetch
+{
+  die "must override in the subclass";
+}
+
 sub probe {
   my $self = shift;
+
+  require Alien::Base::ModuleBuild;
+  if(!Alien::Base::ModuleBuild->alien_install_network && $self->is_network_fetch)
+  {
+    die "network fetch is disabled via ALIEN_INSTALL_NETWORK";
+  }
 
   my $pattern = $self->{pattern};
 
@@ -50,7 +61,7 @@ sub probe {
     # if filename provided, use that specific file
     @files = ($self->{exact_filename});
   } else {
-    @files = $self->list_files();
+    @files = $self->list_files;
 
     if ($pattern) {
       @files = grep { $_ =~ $pattern } @files;

@@ -439,7 +439,7 @@ sub ACTION_alien_code {
   my $cabinet = Alien::Base::ModuleBuild::Cabinet->new;
 
   foreach my $repo (@repos) {
-    $cabinet->add_files( $repo->probe() );
+    $cabinet->add_files( $repo->probe );
   }
 
   $cabinet->sort_files;

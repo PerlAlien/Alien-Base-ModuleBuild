@@ -11,6 +11,8 @@ use parent 'Alien::Base::ModuleBuild::Repository';
 # ABSTRACT: Local file repository handler
 # VERSION
 
+sub is_network_fetch { 0 }
+
 sub new {
   my $class = shift;
 
