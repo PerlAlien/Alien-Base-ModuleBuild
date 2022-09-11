@@ -139,6 +139,44 @@ subtest 'exact_filename trailing slash' => sub {
 
 };
 
+subtest 'has_digest' => sub {
+
+  is(
+    Alien::Base::ModuleBuild::Repository::Test->new($default)->has_digest,
+    F(),
+    'no sha1 or sha256',
+  );
+
+  {
+    local $default->{sha1} = 'foo';
+    is(
+      Alien::Base::ModuleBuild::Repository::Test->new($default)->has_digest,
+      T(),
+      'sha1'
+    );
+  }
+
+  {
+    local $default->{sha256} = 'foo';
+    is(
+      Alien::Base::ModuleBuild::Repository::Test->new($default)->has_digest,
+      T(),
+      'sha256',
+    );
+  }
+
+  {
+    local $default->{sha1}   = 'bar';
+    local $default->{sha256} = 'foo';
+    is(
+      Alien::Base::ModuleBuild::Repository::Test->new($default)->has_digest,
+      T(),
+      'sha1 and sha256',
+    );
+  }
+
+};
+
 done_testing;
 
 package Alien::Base::ModuleBuild::Repository::Test;

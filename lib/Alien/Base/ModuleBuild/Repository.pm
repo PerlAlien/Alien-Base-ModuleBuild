@@ -52,6 +52,12 @@ sub is_secure_fetch
   die "must override in the subclass";
 }
 
+sub has_digest
+{
+  my($self) = @_;
+  defined $self->{sha1} || defined $self->{sha256};
+}
+
 sub probe {
   my $self = shift;
 
