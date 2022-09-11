@@ -169,6 +169,15 @@ my $string = $amb->alien_interpolate($string);
 
 Takes the input string and interpolates the results.
 
+## alien\_install\_network
+
+```perl
+my $bool = $amb->alien_install_network
+```
+
+Returns true if downloading source from the internet is allowed.  This
+is true unless `ALIEN_INSTALL_NETWORK` is defined and false.
+
 # GUIDE TO DOCUMENTATION
 
 The documentation for `Module::Build` is broken up into sections:
@@ -206,22 +215,27 @@ The documentation for `Module::Build` is broken up into sections:
 
 # ENVIRONMENT
 
-- **ALIEN\_VERBOSE**
+- **ALIEN\_ARCH**
 
-    Enables verbose output from [M::B::do\_system](https://metacpan.org/pod/Module::Build#do_system).
+    Set to a true value to install to an arch-specific directory.
 
 - **ALIEN\_FORCE**
 
     Skips checking for an installed version and forces reinstalling the Alien target.
+
+- **ALIEN\_INSTALL\_NETWORK**
+
+    If true (the default if not defined), then network installs will be allowed.
+    Set to `0` or another false value to turn off network installs.
 
 - **ALIEN\_INSTALL\_TYPE**
 
     Set to 'share' or 'system' to override the install type.  Set to 'default' or unset
     to restore the default.
 
-- **ALIEN\_ARCH**
+- **ALIEN\_VERBOSE**
 
-    Set to a true value to install to an arch-specific directory.
+    Enables verbose output from [M::B::do\_system](https://metacpan.org/pod/Module::Build#do_system).
 
 - **ALIEN\_${MODULENAME}\_REPO\_${PROTOCOL}\_${KEY}**
 
@@ -297,7 +311,7 @@ Alberto Simões (ambs)
 
 # COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2012-2020 by Joel A Berger.
+This software is copyright (c) 2012-2022 by Joel A Berger.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

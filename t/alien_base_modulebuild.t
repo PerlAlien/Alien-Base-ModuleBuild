@@ -919,6 +919,35 @@ subtest 'ALIEN_FORCE and ALIEN_INSTALL_TYPE vars' => sub {
 
 };
 
+subtest 'alien_install_network' => sub {
+
+  local $ENV{ALIEN_INSTALL_NETWORK};
+
+  is(
+    Alien::Base::ModuleBuild->alien_install_network,
+    1,
+    'default',
+  );
+
+  $ENV{ALIEN_INSTALL_NETWORK} = 10;
+
+  is(
+    Alien::Base::ModuleBuild->alien_install_network,
+    1,
+    'ALIEN_INSTALL_NETWORK=10',
+  );
+
+
+  $ENV{ALIEN_INSTALL_NETWORK} = 0;
+
+  is(
+    Alien::Base::ModuleBuild->alien_install_network,
+    '',
+    'ALIEN_INSTALL_NETWORK=0',
+  );
+
+};
+
 $CWD = "$abmb_root";
 
 my $count = 1;

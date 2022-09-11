@@ -1277,6 +1277,10 @@ sub _catdir {
   $dir;
 }
 
+sub alien_install_network {
+  defined $ENV{ALIEN_INSTALL_NETWORK} ? !!$ENV{ALIEN_INSTALL_NETWORK} : 1;
+}
+
 1;
 
 __END__
@@ -1438,6 +1442,13 @@ Executes the commands for the given phase.
 
 Takes the input string and interpolates the results.
 
+=head2 alien_install_network
+
+ my $bool = $amb->alien_install_network
+
+Returns true if downloading source from the internet is allowed.  This
+is true unless C<ALIEN_INSTALL_NETWORK> is defined and false.
+
 =head1 GUIDE TO DOCUMENTATION
 
 The documentation for C<Module::Build> is broken up into sections:
@@ -1481,22 +1492,27 @@ in C<Module::Build::API>.
 
 =over 4
 
-=item B<ALIEN_VERBOSE>
+=item B<ALIEN_ARCH>
 
-Enables verbose output from L<M::B::do_system|Module::Build#do_system>.
+Set to a true value to install to an arch-specific directory.
 
 =item B<ALIEN_FORCE>
 
 Skips checking for an installed version and forces reinstalling the Alien target.
+
+=item B<ALIEN_INSTALL_NETWORK>
+
+If true (the default if not defined), then network installs will be allowed.
+Set to C<0> or another false value to turn off network installs.
 
 =item B<ALIEN_INSTALL_TYPE>
 
 Set to 'share' or 'system' to override the install type.  Set to 'default' or unset
 to restore the default.
 
-=item B<ALIEN_ARCH>
+=item B<ALIEN_VERBOSE>
 
-Set to a true value to install to an arch-specific directory.
+Enables verbose output from L<M::B::do_system|Module::Build#do_system>.
 
 =item B<ALIEN_${MODULENAME}_REPO_${PROTOCOL}_${KEY}>
 
