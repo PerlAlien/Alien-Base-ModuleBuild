@@ -16,6 +16,12 @@ our $Has_HTML_Parser = eval { require HTML::LinkExtor; 1 };
 
 sub is_network_fetch { 1 }
 
+sub is_secure_fetch {
+  my($self) = @_;
+
+  (defined $self->{exact_filename} && $self->{exact_filename} =~ /^https:/) || ($self->{protocol}||'http') eq 'https';
+}
+
 sub connection {
 
   my $self = shift;

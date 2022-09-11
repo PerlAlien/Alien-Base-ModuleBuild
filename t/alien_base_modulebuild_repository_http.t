@@ -5,10 +5,38 @@ use File::chdir;
 use File::Temp;
 use URI::file;
 
-is(
-  Alien::Base::ModuleBuild::Repository::HTTP->is_network_fetch,
-  1
-);
+subtest 'network fetch' => sub {
+
+  is(
+    Alien::Base::ModuleBuild::Repository::HTTP->is_network_fetch,
+    1
+  );
+
+};
+
+subtest 'secure fetch' => sub {
+
+  is(
+    Alien::Base::ModuleBuild::Repository::HTTP->new( protocol => 'http' )->is_secure_fetch,
+    F(),
+  );
+
+  is(
+    Alien::Base::ModuleBuild::Repository::HTTP->new( protocol => 'https' )->is_secure_fetch,
+    T(),
+  );
+
+  is(
+    Alien::Base::ModuleBuild::Repository::HTTP->new( protocol => 'http', exact_filename => 'https://foo' )->is_secure_fetch,
+    T(),
+  );
+
+  is(
+    Alien::Base::ModuleBuild::Repository::HTTP->new( protocol => 'http', exact_filename => 'http://foo' )->is_secure_fetch,
+    F(),
+  );
+
+};
 
 subtest 'verify tls' => sub {
 
