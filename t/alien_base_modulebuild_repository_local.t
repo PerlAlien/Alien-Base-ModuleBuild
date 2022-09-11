@@ -9,6 +9,11 @@ is(
   0
 );
 
+is(
+  Alien::Base::ModuleBuild::Repository::Local->is_secure_fetch,
+  1
+);
+
 my $repo = Alien::Base::ModuleBuild::Repository::Local->new({ location => 't' });
 
 my @files = $repo->list_files;

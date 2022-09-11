@@ -6,5 +6,10 @@ is(
   1
 );
 
+is(
+  Alien::Base::ModuleBuild::Repository::FTP->is_secure_fetch,
+  0
+);
+
 done_testing;
 

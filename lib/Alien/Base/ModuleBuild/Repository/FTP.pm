@@ -10,6 +10,7 @@ use Net::FTP;
 # VERSION
 
 sub is_network_fetch { 1 }
+sub is_secure_fetch  { 0 }
 
 sub connection {
   my $self = shift;
