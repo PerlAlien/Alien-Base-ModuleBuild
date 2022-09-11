@@ -5,6 +5,11 @@ use File::chdir;
 use File::Temp;
 use URI::file;
 
+is(
+  Alien::Base::ModuleBuild::Repository::HTTP->is_network_fetch,
+  1
+);
+
 my $index_path = path('corpus/alien_base_modulebuild_repository_http/index.html')->absolute->stringify;
 
 my $mock = mock 'HTTP::Tiny' => (

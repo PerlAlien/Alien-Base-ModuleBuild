@@ -14,6 +14,8 @@ use parent 'Alien::Base::ModuleBuild::Repository';
 
 our $Has_HTML_Parser = eval { require HTML::LinkExtor; 1 };
 
+sub is_network_fetch { 1 }
+
 sub connection {
 
   my $self = shift;

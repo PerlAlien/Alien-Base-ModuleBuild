@@ -9,6 +9,8 @@ use Net::FTP;
 # ABSTRACT: HTTP repository handler
 # VERSION
 
+sub is_network_fetch { 1 }
+
 sub connection {
   my $self = shift;
 

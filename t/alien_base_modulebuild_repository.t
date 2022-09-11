@@ -3,6 +3,7 @@ use Alien::Base::ModuleBuild::Repository;
 use File::chdir;
 use Path::Tiny qw( path );
 
+my $network_fetch = 0;
 @INC = map { path($_)->absolute->stringify } @INC;
 
 my $default = {
@@ -11,7 +12,32 @@ my $default = {
   location => '/gnu/gsl',
 };
 
-{
+subtest 'alien_install_network' => sub {
+
+  local $ENV{ALIEN_INSTALL_NETWORK};
+  delete $ENV{ALIEN_INSTALL_NETWORK};
+
+  $network_fetch = 1;
+
+  ok(lives { Alien::Base::ModuleBuild::Repository::Test->new($default)->probe }, 'default') or diag($@);
+
+  $ENV{ALIEN_INSTALL_NETWORK} = 1;
+
+  ok(lives { Alien::Base::ModuleBuild::Repository::Test->new($default)->probe }, 'override 1') or diag($@);
+
+  $ENV{ALIEN_INSTALL_NETWORK} = 0;
+
+  is(
+    dies { Alien::Base::ModuleBuild::Repository::Test->new($default)->probe },
+    match qr/network fetch is disabled via ALIEN_INSTALL_NETWORK/,
+    'override 0',
+  );
+
+  $network_fetch = 0;
+
+};
+
+subtest 'no pattern' => sub {
   my $repo = Alien::Base::ModuleBuild::Repository::Test->new($default);
 
   my @filenames = $repo->list_files;
@@ -20,9 +46,9 @@ my $default = {
 
   is( scalar @files, scalar @filenames, 'without pattern, probe returns an object for each file');
   isa_ok( $files[0], 'Alien::Base::ModuleBuild::File' );
-}
+};
 
-{
+subtest 'pattern' => sub {
   my $pattern = qr/^gsl-[\d\.]+\.tar\.gz$/;
   local $default->{pattern} = $pattern;
   my $repo = Alien::Base::ModuleBuild::Repository::Test->new($default);
@@ -34,9 +60,9 @@ my $default = {
   is( scalar @files, scalar @filenames, 'with pattern, probe returns an object for each matching file');
   isa_ok( $files[0], 'Alien::Base::ModuleBuild::File' );
   ok( ! defined $files[0]->version, 'without capture, no version information is available');
-}
+};
 
-{
+subtest 'pattern and version capture' => sub {
   my $pattern = qr/^gsl-([\d\.]+)\.tar\.gz$/;
   local $default->{pattern} = $pattern;
   my $repo = Alien::Base::ModuleBuild::Repository::Test->new($default);
@@ -48,9 +74,9 @@ my $default = {
   is( scalar @files, scalar @filenames, 'with pattern, probe returns an object for each matching file');
   isa_ok( $files[0], 'Alien::Base::ModuleBuild::File' );
   ok( defined $files[0]->version, 'with capture, version information is available');
-}
+};
 
-{
+subtest 'exact filename' => sub {
   my $filename = 'gsl-1.9.tar.gz.sig';
   local $default->{exact_filename} = $filename;
   my $repo = Alien::Base::ModuleBuild::Repository::Test->new($default);
@@ -61,9 +87,9 @@ my $default = {
   isa_ok( $files[0], 'Alien::Base::ModuleBuild::File' );
   is( $files[0]->{filename}, $filename, 'the name of the object is the given filename');
   ok( ! defined $files[0]->version, 'without exact version, no version information is available');
-}
+};
 
-{
+subtest 'exact filename and digest' => sub {
   my $filename = 'gsl-1.9.tar.gz.sig';
   local $default->{exact_filename} = $filename;
   local $default->{exact_version} = '1.9';
@@ -83,7 +109,7 @@ my $default = {
       is( $files[0]->{sha1}, $sha1, 'the SHA-1 hash of the given filename');
       is( $files[0]->{sha256}, $sha256, 'the SHA-256 hash of the given filename');
   }
-}
+};
 
 subtest 'exact_filename trailing slash' => sub {
 
@@ -120,6 +146,8 @@ package Alien::Base::ModuleBuild::Repository::Test;
 use strict;
 use warnings;
 use parent 'Alien::Base::ModuleBuild::Repository';
+
+sub is_network_fetch { $network_fetch }
 
 sub list_files {
   my $self = shift;
