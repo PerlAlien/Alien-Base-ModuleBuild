@@ -18,8 +18,11 @@ sub new {
   $obj->{c_compiler_required} = 1
     unless defined $obj->{c_compiler_required};
 
-  if($obj->{exact_filename} && $obj->{location} !~ m{/$}) {
-    $obj->{location} .= '/'
+  my $location = $obj->{location};
+  $location = '' unless defined $location;
+
+  if(defined $obj->{exact_filename} && $location !~ m{/$}) {
+    $obj->{location} = $location . '/'
   }
 
   return $obj;
