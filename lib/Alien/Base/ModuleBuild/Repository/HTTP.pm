@@ -74,6 +74,9 @@ sub get_file {
 
   my $uri = $self->build_uri($protocol, $host, $from, $file);
   $file = ($uri->path_segments())[-1];
+
+  die "Attempted downgrad from https to http on URL $uri" if $self->is_secure_fetch && $uri !~ /^https:/;
+
   my $res = $self->connection->mirror($uri, $file);
   my ( $is_error, $content, $headers ) = $self->check_http_response( $res );
   croak "Download failed: " . $content if $is_error;
@@ -95,6 +98,8 @@ sub list_files {
   my $host = $self->host;
   my $location = $self->location;
   my $uri = $self->build_uri($protocol, $host, $location);
+
+  die "Attempted downgrad from https to http on URL $uri" if $self->is_secure_fetch && $uri !~ /^https:/;
 
   my $res = $self->connection->get($uri);
 

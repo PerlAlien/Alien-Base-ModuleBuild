@@ -5,6 +5,7 @@ Revision history for Perl module {{$dist->name}}
   - Add support for ALIEN_INSTALL_NETWORK (gh#28, gh#29)
   - Verify hostnames for SSL connections when ALIEN_DOWNLOAD_RULE
     requires encryption (gh#28, gh#29)
+  - Downgrade from https to http is no longer allowed (gh#28, gh#29)
 
 1.15      2020-08-28 09:50:28 -0600
   - Move inline tests from this distro to Acme::Alien::DontPanic
