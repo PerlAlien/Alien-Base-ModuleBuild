@@ -55,7 +55,7 @@ sub is_secure_fetch
 sub has_digest
 {
   my($self) = @_;
-  defined $self->{sha1} || defined $self->{sha256};
+  defined $self->{exact_filename} && $self->{exact_version} && (defined $self->{sha1} || defined $self->{sha256});
 }
 
 sub probe {
