@@ -141,6 +141,9 @@ subtest 'exact_filename trailing slash' => sub {
 
 subtest 'has_digest' => sub {
 
+  local $default->{exact_filename} = 'gsl-1.9.tar.gz.sig';
+  local $default->{exact_version}  = 1.9;
+
   is(
     Alien::Base::ModuleBuild::Repository::Test->new($default)->has_digest,
     F(),
@@ -172,6 +175,19 @@ subtest 'has_digest' => sub {
       Alien::Base::ModuleBuild::Repository::Test->new($default)->has_digest,
       T(),
       'sha1 and sha256',
+    );
+  }
+
+  delete $default->{exact_filename};
+  delete $default->{exact_version};
+
+  {
+    local $default->{sha1}   = 'bar';
+    local $default->{sha256} = 'foo';
+    is(
+      Alien::Base::ModuleBuild::Repository::Test->new($default)->has_digest,
+      F(),
+      'sha1 and sha256 and no exaxt',
     );
   }
 
