@@ -1281,6 +1281,17 @@ sub alien_install_network {
   defined $ENV{ALIEN_INSTALL_NETWORK} ? !!$ENV{ALIEN_INSTALL_NETWORK} : 1;
 }
 
+sub alien_download_rule {
+
+  if(defined $ENV{ALIEN_DOWNLOAD_RULE}) {
+    return 'warn' if $ENV{ALIEN_DOWNLOAD_RULE} eq 'default';
+    return $ENV{ALIEN_DOWNLOAD_RULE} if $ENV{ALIEN_DOWNLOAD_RULE} =~ /^(warn|digest|encrypt|digest_or_encrypt|digest_and_encrypt)$/;
+    warn "unknown ALIEN_DOWNLOAD_RULE \"ALIEN_DOWNLOAD_RULE\", using \"warn\" instead";
+  }
+
+  return 'warn';
+}
+
 1;
 
 __END__
@@ -1444,10 +1455,18 @@ Takes the input string and interpolates the results.
 
 =head2 alien_install_network
 
- my $bool = $amb->alien_install_network
+ my $bool = $amb->alien_install_network;
 
 Returns true if downloading source from the internet is allowed.  This
 is true unless C<ALIEN_INSTALL_NETWORK> is defined and false.
+
+=head2 alien_download_rule
+
+ my $rule = $amb->alien_download_rule;
+
+This will return one of C<warn>, C<digest>, C<encrypt>, C<digest_or_encrypt>
+or C<digest_and_encrypt>.  This is based on the C<ALIEN_DOWNLOAD_RULE>
+environment variable.
 
 =head1 GUIDE TO DOCUMENTATION
 
@@ -1495,6 +1514,41 @@ in C<Module::Build::API>.
 =item B<ALIEN_ARCH>
 
 Set to a true value to install to an arch-specific directory.
+
+=item B<ALIEN_DOWNLOAD_RULE>
+
+This controls security options for fetching alienized packages over the internet.
+The legal values are:
+
+=over 4
+
+=item C<warn>
+
+Warn if the package is either unencrypted or lacks a digest.  This is currently
+the default, but will change in the near future.
+
+=item C<digest>
+
+Fetch will not happen unless there is a digest for the alienized package.
+
+=item C<encrypt>
+
+Fetch will not happen unless via an encrypted protocol like C<https>, or if the
+package is bundled with the L<Alien>.
+
+=item C<digest_or_encrypt>
+
+Fetch will only happen if the alienized package has a cryptographic signature digest,
+or if an encrypted protocol like C<https> is used, or if the package is bundled with
+the L<Alien>.  This will be the default in the near future.
+
+=item C<digest_and_encrypt>
+
+Fetch will only happen if the alienized package has a cryptographic signature digest,
+and is fetched via a secure protocol (like C<https>).  Bundled packages are also
+considered fetch via a secure protocol, but will still require a digest.
+
+=back
 
 =item B<ALIEN_FORCE>
 
