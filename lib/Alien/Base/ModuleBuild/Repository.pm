@@ -42,13 +42,11 @@ sub location {
   return $self->{location};
 }
 
-sub is_network_fetch
-{
+sub is_network_fetch {
   die "must override in the subclass";
 }
 
-sub is_secure_fetch
-{
+sub is_secure_fetch {
   die "must override in the subclass";
 }
 
@@ -62,9 +60,45 @@ sub probe {
   my $self = shift;
 
   require Alien::Base::ModuleBuild;
-  if(!Alien::Base::ModuleBuild->alien_install_network && $self->is_network_fetch)
-  {
+  if(!Alien::Base::ModuleBuild->alien_install_network && $self->is_network_fetch) {
     die "network fetch is disabled via ALIEN_INSTALL_NETWORK";
+  }
+
+  my $rule = Alien::Base::ModuleBuild->alien_download_rule;
+  if($rule eq 'warn') {
+
+    unless($self->is_secure_fetch || $self->has_digest) {
+      warn "!!! NOTICE OF FUTURE CHANGE IN BEHAVIOR !!!\n";
+      warn "A future version of Alien::Base::ModuleBuild will die here by default with this exception: File fetch is insecure and has no digest.  Required by ALIEN_DOWNLOAD_RULE=digest_or_encrypt.";
+      warn "!!! NOTICE OF FUTURE CHANGE IN BEHAVIOR !!!\n";
+    }
+
+  } elsif($rule eq 'digest') {
+
+    unless($self->has_digest) {
+      die "File fetch has no digest.  Required by ALIEN_DOWNLOAD_RULE=digest.";
+    }
+
+  } elsif($rule eq 'encrypt') {
+
+    unless($self->is_secure_fetch) {
+      die "File fetch is insecure.  Secure fetch required by ALIEN_DOWNLOAD_RULE=encrypt.";
+    }
+
+  } elsif($rule eq 'digest_or_encrypt') {
+
+    unless($self->is_secure_fetch || $self->has_digest) {
+      die "File fetch is insecure and has no digest.  Required by ALIEN_DOWNLOAD_RULE=digest_or_encrypt.";
+    }
+
+  } elsif($rule eq 'digest_and_encrypt') {
+
+    unless($self->is_secure_fetch && $self->has_digest) {
+      die "File fetch is insecure and has no digest.  Both are required by ALIEN_DOWNLOAD_RULE=digest_and_encrypt.";
+    }
+
+  } else {
+    die 'internal error';
   }
 
   my $pattern = $self->{pattern};

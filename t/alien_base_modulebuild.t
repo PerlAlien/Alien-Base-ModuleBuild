@@ -111,6 +111,8 @@ subtest 'override temp and share' => sub {
 subtest 'destdir' => sub {
   skip_all 'TODO on MSWin32' if $^O eq 'MSWin32';
 
+  local $ENV{ALIEN_DOWNLOAD_RULE} = 'digest_or_encrypt';
+
   local $CWD = _new_temp();
 
   open my $fh, '>', 'build.pl';
@@ -234,6 +236,7 @@ subtest 'alien_bin_requires' => sub {
 
 subtest 'alien_check_built_version' => sub {
 
+  local $ENV{ALIEN_DOWNLOAD_RULE} = 'digest_or_encrypt';
   local $CWD = _new_temp();
 
   open my $fh, '>', 'build.pl';
@@ -291,6 +294,7 @@ EOF
 subtest 'multi arg do_system' => sub {
 
   local $CWD = _new_temp();
+  local $ENV{ALIEN_DOWNLOAD_RULE} = 'digest_or_encrypt';
 
   open my $fh, '>', 'build.pl';
   print $fh <<'EOF';
