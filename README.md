@@ -172,11 +172,21 @@ Takes the input string and interpolates the results.
 ## alien\_install\_network
 
 ```perl
-my $bool = $amb->alien_install_network
+my $bool = $amb->alien_install_network;
 ```
 
 Returns true if downloading source from the internet is allowed.  This
 is true unless `ALIEN_INSTALL_NETWORK` is defined and false.
+
+## alien\_download\_rule
+
+```perl
+my $rule = $amb->alien_download_rule;
+```
+
+This will return one of `warn`, `digest`, `encrypt`, `digest_or_encrypt`
+or `digest_and_encrypt`.  This is based on the `ALIEN_DOWNLOAD_RULE`
+environment variable.
 
 # GUIDE TO DOCUMENTATION
 
@@ -218,6 +228,37 @@ The documentation for `Module::Build` is broken up into sections:
 - **ALIEN\_ARCH**
 
     Set to a true value to install to an arch-specific directory.
+
+- **ALIEN\_DOWNLOAD\_RULE**
+
+    This controls security options for fetching alienized packages over the internet.
+    The legal values are:
+
+    - `warn`
+
+        Warn if the package is either unencrypted or lacks a digest.  This is currently
+        the default, but will change in the near future.
+
+    - `digest`
+
+        Fetch will not happen unless there is a digest for the alienized package.
+
+    - `encrypt`
+
+        Fetch will not happen unless via an encrypted protocol like `https`, or if the
+        package is bundled with the [Alien](https://metacpan.org/pod/Alien).
+
+    - `digest_or_encrypt`
+
+        Fetch will only happen if the alienized package has a cryptographic signature digest,
+        or if an encrypted protocol like `https` is used, or if the package is bundled with
+        the [Alien](https://metacpan.org/pod/Alien).  This will be the default in the near future.
+
+    - `digest_and_encrypt`
+
+        Fetch will only happen if the alienized package has a cryptographic signature digest,
+        and is fetched via a secure protocol (like `https`).  Bundled packages are also
+        considered fetch via a secure protocol, but will still require a digest.
 
 - **ALIEN\_FORCE**
 

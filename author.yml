@@ -59,6 +59,8 @@ pod_spelling_system:
     - kmx
     - pkgconfig
     - integrators
+    - cryptographic
+    - alienized
 
 pod_coverage:
   skip: 0
