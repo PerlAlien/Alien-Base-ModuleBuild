@@ -2,9 +2,16 @@ use Test2::V0 -no_srand => 1;
 use Alien::Base::ModuleBuild::Repository;
 use File::chdir;
 use Path::Tiny qw( path );
+use Capture::Tiny qw( capture_stderr );
 
 my $network_fetch = 0;
+my $secure_fetch = 1;
 @INC = map { path($_)->absolute->stringify } @INC;
+
+# This test will not pass with digest required.  It does not download anything
+# off the internet.
+$ENV{ALIEN_DOWNLOAD_RULE} = 'warn'              if defined $ENV{ALIEN_DOWNLOAD_RULE} && $ENV{ALIEN_DOWNLOAD_RULE} eq 'digest';
+$ENV{ALIEN_DOWNLOAD_RULE} = 'digest_or_encrypt' if defined $ENV{ALIEN_DOWNLOAD_RULE} && $ENV{ALIEN_DOWNLOAD_RULE} eq 'digest_and_encrypt';
 
 my $default = {
   protocol => 'test',
@@ -36,6 +43,188 @@ subtest 'alien_install_network' => sub {
   $network_fetch = 0;
 
 };
+
+subtest 'alien_download_rule' => sub {
+
+  subtest 'warn' => sub {
+
+    local $ENV{ALIEN_DOWNLOAD_RULE} = 'warn';
+    is(
+      Alien::Base::ModuleBuild->alien_download_rule, 'warn',
+    );
+
+    my @warnings;
+
+    local $SIG{__WARN__} = sub {
+      my($message) = @_;
+      if($message =~ /^(!!! NOTICE OF FUTURE CHANGE IN BEHAVIOR !!!|A future version of Alien::Base::ModuleBuild)/)
+      {
+        push @warnings, $message
+      }
+      else
+      {
+        warn $message;
+      }
+    };
+
+    @warnings = ();
+    $secure_fetch = 1;
+    Alien::Base::ModuleBuild::Repository::Test->new($default)->probe;
+
+    is
+      \@warnings,
+      [];
+
+    @warnings = ();
+    $secure_fetch = 0;
+    Alien::Base::ModuleBuild::Repository::Test->new($default)->probe;
+
+    is
+      \@warnings,
+      array {
+        item match qr/^!!! NOTICE OF FUTURE CHANGE IN BEHAVIOR !!!/;
+        item match qr/^A future version of Alien::Base::ModuleBuild will die here by default with this exception: File fetch is insecure and has no digest\.  Required by ALIEN_DOWNLOAD_RULE=digest_or_encrypt\./;
+        item match qr/^!!! NOTICE OF FUTURE CHANGE IN BEHAVIOR !!!/;
+        end;
+      };
+
+    @warnings = ();
+    local $default->{sha1} = 'xxx';
+    local $default->{exact_filename} = 'gsl-1.9.tar.gz.sig';
+    local $default->{exact_version}  = 1.9;
+    Alien::Base::ModuleBuild::Repository::Test->new($default)->probe;
+
+    is
+      \@warnings,
+      [];
+
+  };
+
+  subtest 'digest' => sub {
+
+    local $ENV{ALIEN_DOWNLOAD_RULE} = 'digest';
+    is(
+      Alien::Base::ModuleBuild->alien_download_rule, 'digest',
+    );
+
+    $secure_fetch = 0;
+
+    is(
+      dies { Alien::Base::ModuleBuild::Repository::Test->new($default)->probe },
+      match qr/^File fetch has no digest\.  Required by ALIEN_DOWNLOAD_RULE=digest\./,
+    );
+
+    local $default->{sha1} = 'xxx';
+    local $default->{exact_filename} = 'gsl-1.9.tar.gz.sig';
+    local $default->{exact_version}  = 1.9;
+
+    ok(
+      lives { Alien::Base::ModuleBuild::Repository::Test->new($default)->probe },
+    ) or diag($@);
+
+  };
+
+  subtest 'encrypt' => sub {
+
+    local $ENV{ALIEN_DOWNLOAD_RULE} = 'encrypt';
+    is(
+      Alien::Base::ModuleBuild->alien_download_rule, 'encrypt',
+    );
+
+    $secure_fetch = 0;
+
+    is(
+      dies { Alien::Base::ModuleBuild::Repository::Test->new($default)->probe },
+      match qr/^File fetch is insecure\.  Secure fetch required by ALIEN_DOWNLOAD_RULE=encrypt\./,
+    );
+
+    $secure_fetch = 1;
+
+    ok(
+      lives { Alien::Base::ModuleBuild::Repository::Test->new($default)->probe },
+    ) or diag($@);
+
+  };
+
+  subtest 'digest_or_encrypt' => sub {
+
+    local $ENV{ALIEN_DOWNLOAD_RULE} = 'digest_or_encrypt';
+    is(
+      Alien::Base::ModuleBuild->alien_download_rule, 'digest_or_encrypt',
+    );
+
+    $secure_fetch = 0;
+
+    is(
+      dies { Alien::Base::ModuleBuild::Repository::Test->new($default)->probe },
+      match qr/^File fetch is insecure and has no digest\.  Required by ALIEN_DOWNLOAD_RULE=digest_or_encrypt\./,
+    );
+
+    $secure_fetch = 1;
+
+    ok(
+      lives { Alien::Base::ModuleBuild::Repository::Test->new($default)->probe },
+    ) or diag($@);
+
+    $secure_fetch = 0;
+    local $default->{sha1} = 'xxx';
+    local $default->{exact_filename} = 'gsl-1.9.tar.gz.sig';
+    local $default->{exact_version}  = 1.9;
+
+    ok(
+      lives { Alien::Base::ModuleBuild::Repository::Test->new($default)->probe },
+    ) or diag($@);
+
+    $secure_fetch = 1;
+
+    ok(
+      lives { Alien::Base::ModuleBuild::Repository::Test->new($default)->probe },
+    ) or diag($@);
+
+  };
+
+  subtest 'digest_and_encrypt' => sub {
+
+    local $ENV{ALIEN_DOWNLOAD_RULE} = 'digest_and_encrypt';
+    is(
+      Alien::Base::ModuleBuild->alien_download_rule, 'digest_and_encrypt',
+    );
+
+    $secure_fetch = 0;
+
+    is(
+      dies { Alien::Base::ModuleBuild::Repository::Test->new($default)->probe },
+      match qr/^File fetch is insecure and has no digest\.  Both are required by ALIEN_DOWNLOAD_RULE=digest_and_encrypt\./,
+    );
+
+    $secure_fetch = 1;
+
+    is(
+      dies { Alien::Base::ModuleBuild::Repository::Test->new($default)->probe },
+      match qr/^File fetch is insecure and has no digest\.  Both are required by ALIEN_DOWNLOAD_RULE=digest_and_encrypt\./,
+    );
+
+    $secure_fetch = 0;
+    local $default->{sha1} = 'xxx';
+    local $default->{exact_filename} = 'gsl-1.9.tar.gz.sig';
+    local $default->{exact_version}  = 1.9;
+
+    is(
+      dies { Alien::Base::ModuleBuild::Repository::Test->new($default)->probe },
+      match qr/^File fetch is insecure and has no digest\.  Both are required by ALIEN_DOWNLOAD_RULE=digest_and_encrypt\./,
+    );
+
+    $secure_fetch = 1;
+
+    ok(
+      lives { Alien::Base::ModuleBuild::Repository::Test->new($default)->probe },
+    ) or diag($@);
+
+  };
+
+};
+
+$secure_fetch = 1;
 
 subtest 'no pattern' => sub {
   my $repo = Alien::Base::ModuleBuild::Repository::Test->new($default);
@@ -202,6 +391,7 @@ use warnings;
 use parent 'Alien::Base::ModuleBuild::Repository';
 
 sub is_network_fetch { $network_fetch }
+sub is_secure_fetch  { $secure_fetch }
 
 sub list_files {
   my $self = shift;
