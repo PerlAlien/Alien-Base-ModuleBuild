@@ -31,7 +31,26 @@ sub connection {
   eval { require $module; 1 }
     or croak "Could not load protocol_class '$self->{protocol_class}': $@";
 
-  my $http = $self->{protocol_class}->new();
+  my %args;
+
+  if($self->{protocol_class}->isa('HTTP::Tiny'))
+  {
+    $args{agent} = "Alien-Base-ModuleBuild/HTTP::Tiny/@{[ $Alien::Base::ModuleBuild::VERSION || 'dev' ]}";
+    require Alien::Base::ModuleBuild;
+    $args{verify_SSL} = 1 if Alien::Base::ModuleBuild->alien_download_rule =~ /encrypt/;
+  }
+  elsif($self->{protocol_class}->isa('LWP::UserAgent'))
+  {
+    $args{agent} = "Alien-Base-ModuleBuild/LWP::UserAgent/@{[ $Alien::Base::ModuleBuild::VERSION || 'dev' ]}";
+    # Note this is the default for recent LWP
+    $args{ssl_opts} = { verify_hostname => 1 } if Alien::Base::ModuleBuild->alien_download_rule =~ /encrypt/;
+  }
+  else
+  {
+    die "unsupported protocol class: @{[ $self->{protocol_class} ]}";
+  }
+
+  my $http = $self->{protocol_class}->new(%args);
 
   $self->{connection} = $http;
 

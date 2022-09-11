@@ -12,6 +12,7 @@ use parent 'Alien::Base::ModuleBuild::Repository';
 # VERSION
 
 sub is_network_fetch { 0 }
+sub is_secure_fetch  { 1 }
 
 sub new {
   my $class = shift;

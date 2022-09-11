@@ -44,6 +44,11 @@ sub is_network_fetch
   die "must override in the subclass";
 }
 
+sub is_secure_fetch
+{
+  die "must override in the subclass";
+}
+
 sub probe {
   my $self = shift;
 
