@@ -36,6 +36,8 @@ sub get {
   if (defined $self->{sha1} || defined $self->{sha256}) {
     unless (eval { require Digest::SHA }) {
       warn "sha1 or sha256 sums are specified but cannot be checked since Digest::SHA is not installed";
+      require Alien::Base::ModuleBuild;
+      return undef if Alien::Base::ModuleBuild->alien_download_rule =~ /digest/;
       return $filename;
     }
 
