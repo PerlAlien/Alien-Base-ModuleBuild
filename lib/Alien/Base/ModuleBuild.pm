@@ -1455,12 +1455,16 @@ Takes the input string and interpolates the results.
 
 =head2 alien_install_network
 
+[version 1.16]
+
  my $bool = $amb->alien_install_network;
 
 Returns true if downloading source from the internet is allowed.  This
 is true unless C<ALIEN_INSTALL_NETWORK> is defined and false.
 
 =head2 alien_download_rule
+
+[version 1.16]
 
  my $rule = $amb->alien_download_rule;
 
