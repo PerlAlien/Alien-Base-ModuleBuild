@@ -73,3 +73,14 @@ sub filename   { shift->{filename}   }
 
 1;
 
+=head1 SEE ALSO
+
+=over 4
+
+=item L<Alien>
+
+=item L<Alien::Base>
+
+=back
+
+=cut

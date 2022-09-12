@@ -151,3 +151,14 @@ sub get_file  { croak "$_[0] doesn't provide 'get_files' method"  }
 
 1;
 
+=head1 SEE ALSO
+
+=over 4
+
+=item L<Alien>
+
+=item L<Alien::Base>
+
+=back
+
+=cut
