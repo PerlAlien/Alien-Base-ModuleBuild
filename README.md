@@ -171,6 +171,8 @@ Takes the input string and interpolates the results.
 
 ## alien\_install\_network
 
+\[version 1.16\]
+
 ```perl
 my $bool = $amb->alien_install_network;
 ```
@@ -179,6 +181,8 @@ Returns true if downloading source from the internet is allowed.  This
 is true unless `ALIEN_INSTALL_NETWORK` is defined and false.
 
 ## alien\_download\_rule
+
+\[version 1.16\]
 
 ```perl
 my $rule = $amb->alien_download_rule;
