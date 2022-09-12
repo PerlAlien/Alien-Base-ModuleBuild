@@ -25,7 +25,7 @@ my $builder = Alien::Base::ModuleBuild->new(
                              # system version of the mylibrary
 
   alien_repository => {
-    protocol => 'http',
+    protocol => 'https',
     host     => 'myhost.org',
     location => '/path/to/tarballs',
     pattern  => qr{^mylibrary-([0-9\.]+)\.tar\.gz$},
@@ -144,11 +144,12 @@ this method.
 my %result = $amb->alien_do_system($cmd)
 ```
 
-Similar to [Module::Build::do\_system](https://metacpan.org/pod/Module::Build::do_system), also sets the path and several
-environment variables in accordance to the object configuration
-(i.e. `alien_bin_requires`) and performs the interpolation of the
-patterns described in ["COMMAND
-INTERPOLATION" in Alien::Base::ModuleBuild::API](https://metacpan.org/pod/Alien::Base::ModuleBuild::API#COMMAND-INTERPOLATION).
+Similar to
+[Module::Build's do\_system](https://metacpan.org/pod/Module::Build::API#do_system-cmd-args),
+also sets the path and several environment variables in accordance
+to the object configuration (i.e. `alien_bin_requires`) and
+performs the interpolation of the patterns described in
+["COMMAND INTERPOLATION" in Alien::Base::ModuleBuild::API](https://metacpan.org/pod/Alien::Base::ModuleBuild::API#COMMAND-INTERPOLATION).
 
 Returns a set of key value pairs including `stdout`, `stderr`,
 `success` and `command`.
@@ -227,6 +228,19 @@ The documentation for `Module::Build` is broken up into sections:
     This is a reference to the `Alien::Base::ModuleBuild` API beyond that contained
     in `Module::Build::API`.
 
+- Using the resulting [Alien](https://metacpan.org/pod/Alien) ([Alien::Build::Manual::AlienUser](https://metacpan.org/pod/Alien::Build::Manual::AlienUser))
+
+    Once you have an [Alien](https://metacpan.org/pod/Alien) you or your users can review this manual for how to use
+    it.  Generally speaking you should have some useful usage information in your
+    [Alien](https://metacpan.org/pod/Alien)'s POD, but some authors choose to direct their users to this manual
+    instead.
+
+- Using [Alien::Build](https://metacpan.org/pod/Alien::Build) instead ([Alien::Build::Manual](https://metacpan.org/pod/Alien::Build::Manual))
+
+    As mentioned at the top, you are encouraged to use the [Alien::Build](https://metacpan.org/pod/Alien::Build) and
+    [alienfile](https://metacpan.org/pod/alienfile) system instead.  This manual is a starting point for the other
+    [Alien::Build](https://metacpan.org/pod/Alien::Build) documentation.
+
 # ENVIRONMENT
 
 - **ALIEN\_ARCH**
@@ -275,7 +289,7 @@ The documentation for `Module::Build` is broken up into sections:
 
 - **ALIEN\_INSTALL\_TYPE**
 
-    Set to 'share' or 'system' to override the install type.  Set to 'default' or unset
+    Set to `share` or `system` to override the install type.  Set to `default` or unset
     to restore the default.
 
 - **ALIEN\_VERBOSE**

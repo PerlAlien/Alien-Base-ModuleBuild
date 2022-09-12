@@ -1319,7 +1319,7 @@ In your Build.PL:
                               # system version of the mylibrary
  
    alien_repository => {
-     protocol => 'http',
+     protocol => 'https',
      host     => 'myhost.org',
      location => '/path/to/tarballs',
      pattern  => qr{^mylibrary-([0-9\.]+)\.tar\.gz$},
@@ -1432,11 +1432,12 @@ this method.
 
   my %result = $amb->alien_do_system($cmd)
 
-Similar to L<Module::Build::do_system>, also sets the path and several
-environment variables in accordance to the object configuration
-(i.e. C<alien_bin_requires>) and performs the interpolation of the
-patterns described in L<Alien::Base::ModuleBuild::API/COMMAND
-INTERPOLATION>.
+Similar to
+L<Module::Build's do_system|Module::Build::API/"do_system($cmd, @args)">,
+also sets the path and several environment variables in accordance
+to the object configuration (i.e. C<alien_bin_requires>) and
+performs the interpolation of the patterns described in
+L<Alien::Base::ModuleBuild::API/"COMMAND INTERPOLATION">.
 
 Returns a set of key value pairs including C<stdout>, C<stderr>,
 C<success> and C<command>.
@@ -1509,6 +1510,19 @@ L<Alien::Base> projects, it is located in the upper namespace.
 This is a reference to the C<Alien::Base::ModuleBuild> API beyond that contained
 in C<Module::Build::API>.
 
+=item Using the resulting L<Alien> (L<Alien::Build::Manual::AlienUser>)
+
+Once you have an L<Alien> you or your users can review this manual for how to use
+it.  Generally speaking you should have some useful usage information in your
+L<Alien>'s POD, but some authors choose to direct their users to this manual
+instead.
+
+=item Using L<Alien::Build> instead (L<Alien::Build::Manual>)
+
+As mentioned at the top, you are encouraged to use the L<Alien::Build> and
+L<alienfile> system instead.  This manual is a starting point for the other
+L<Alien::Build> documentation.
+
 =back
 
 =head1 ENVIRONMENT
@@ -1565,7 +1579,7 @@ Set to C<0> or another false value to turn off network installs.
 
 =item B<ALIEN_INSTALL_TYPE>
 
-Set to 'share' or 'system' to override the install type.  Set to 'default' or unset
+Set to C<share> or C<system> to override the install type.  Set to C<default> or unset
 to restore the default.
 
 =item B<ALIEN_VERBOSE>
