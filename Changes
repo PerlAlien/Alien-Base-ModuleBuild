@@ -1,7 +1,10 @@
 Revision history for Perl module {{$dist->name}}
 
 {{$NEXT}}
+
+1.17      2022-09-13 05:27:09 -0600
   - Documentation improvements (gh#30, gh#31)
+  - Production release otherwise identical to 1.16_01
 
 1.16_01   2022-09-11 15:29:26 -0600
   - Add support for ALIEN_DOWNLOAD_RULE (gh#28, gh#29)
