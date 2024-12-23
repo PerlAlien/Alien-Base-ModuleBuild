@@ -3,3 +3,6 @@
 *.swp
 .DS_Store
 *.bak
+/.build
+*.old
+*.orig
