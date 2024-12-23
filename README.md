@@ -1,4 +1,4 @@
-# Alien::Base::ModuleBuild ![linux](https://github.com/PerlAlien/Alien-Base-ModuleBuild/workflows/linux/badge.svg) ![windows](https://github.com/PerlAlien/Alien-Base-ModuleBuild/workflows/windows/badge.svg) ![macos](https://github.com/PerlAlien/Alien-Base-ModuleBuild/workflows/macos/badge.svg)
+# Alien::Base::ModuleBuild ![static](https://github.com/PerlAlien/Alien-Base-ModuleBuild/workflows/static/badge.svg) ![linux](https://github.com/PerlAlien/Alien-Base-ModuleBuild/workflows/linux/badge.svg) ![windows](https://github.com/PerlAlien/Alien-Base-ModuleBuild/workflows/windows/badge.svg) ![macos](https://github.com/PerlAlien/Alien-Base-ModuleBuild/workflows/macos/badge.svg)
 
 A Module::Build subclass for building Alien:: modules and their libraries
 
@@ -370,7 +370,7 @@ Alberto Simões (ambs)
 
 # COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2012-2022 by Joel A Berger.
+This software is copyright (c) 2012-2024 by Joel A Berger.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
